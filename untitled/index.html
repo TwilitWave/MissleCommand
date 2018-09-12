@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Making your first Phaser 3 Game - Part 10</title>
+    <title>Shittier missile command</title>
     <script src="phaser.min.js"></script>
+    <script src="phaser.js"></script>
     <style type="text/css">
         body {
             margin: 0;
@@ -28,6 +29,7 @@
         this.game.time.events.loop(Phaser.Timer.SECOND * 2, this.launch, this);
 
         return this;
+
 
     }
 
@@ -54,7 +56,6 @@
             }
 
         }
-
     }
 
     Missile = function (game, bmd) {
@@ -100,6 +101,7 @@
 
         update: function () {
 
+            //this.alive = false
             if (this.alive)
             {
                 this.bmd.context.fillStyle = '#ff0000';
@@ -374,13 +376,6 @@
     var game = new Phaser.Game(640, 480, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
     function preload() {
-
-        game.load.image('title', 'assets/games/missilecommand/title-page.png');
-        game.load.image('land', 'assets/games/missilecommand/land.png');
-        game.load.image('marker', 'assets/games/missilecommand/marker.png');
-        game.load.image('missile', 'assets/games/missilecommand/missile.png');
-        game.load.image('sky', 'assets/skies/cavern2.png');
-        game.load.spritesheet('city', 'assets/games/missilecommand/city.png', 64, 36);
 
     }
 
