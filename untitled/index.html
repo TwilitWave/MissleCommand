@@ -26,6 +26,8 @@
 
         this.missiles = [];
 
+        // this is where we launch the missiles(blue things)
+
         this.game.time.events.loop(Phaser.Timer.SECOND * 2, this.launch, this);
 
         return this;
@@ -55,7 +57,28 @@
                 }
             }
 
-        }
+        },
+
+        numAliveMissiles:function()
+        {
+            var temp = [];
+            for(var i = 0; i < this.missiles.length;i++)
+            {
+                if(this.missiles[i].alive == true)
+                {
+                    temp.push(this.missiles[i]);
+                }
+            }
+            return temp;
+        },
+
+        addExplosion: function (x, y) {
+
+            //let explosion = new Explosion(this.game, this.explosionBMD);
+
+            //this.getExplosion().explode(x, y);
+
+        },
     }
 
     Missile = function (game, bmd) {
@@ -66,7 +89,7 @@
         this.x = 0;
         this.y = 0;
         this.alive = false;
-        this.speed = 1;
+        this.speed = 5;
 
         this.target = null;
         this.data = null;
@@ -87,9 +110,9 @@
 
             this.target = target;
 
-            var destination = { x: this.x, y: this.y };
+            let destination = { x: this.x, y: this.y };
 
-            var tween = this.game.make.tween(destination).to( { x: target.hitX, y: target.hitY }, speed, Phaser.Easing.Linear.None);
+            let tween = this.game.make.tween(destination).to( { x: target.hitX, y: target.hitY }, speed, Phaser.Easing.Linear.None);
 
             this.data = tween.generateData(60);
             this.index = 0;
@@ -101,7 +124,7 @@
 
         update: function () {
 
-            //this.alive = false
+
             if (this.alive)
             {
                 this.bmd.context.fillStyle = '#ff0000';
@@ -112,7 +135,6 @@
                 if (this.index === this.data.length)
                 {
                     this.alive = false;
-                    console.log('hit target?');
                 }
                 else
                 {
@@ -121,8 +143,20 @@
                 }
 
             }
+            else
+            {
+                //this.bmd.context.fillStyle = '#000000';
+                //this.bmd.context.fillRect(this.x, this.y, 1, 1);
+            }
 
+        },
+
+        explode:function()
+        {
+            this.alive = false;
         }
+
+
 
     };
 
@@ -144,7 +178,7 @@
 
         this.line = null;
         this.alive = false;
-        this.speed = 1;
+        this.speed = 10;
 
         this.silo = null;
         this.data = null;
@@ -169,9 +203,9 @@
 
             this.speed = Math.floor(this.game.math.distance(this.line.start.x, this.line.start.y, destX, destY) * speed);
 
-            var destination = { x: this.launchX, y: this.launchY };
+            let destination = { x: this.launchX, y: this.launchY };
 
-            var tween = this.game.make.tween(destination).to( { x: this.destX, y: this.destY }, this.speed, Phaser.Easing.Linear.None);
+            let tween = this.game.make.tween(destination).to( { x: this.destX, y: this.destY }, this.speed, Phaser.Easing.Linear.None);
 
             this.data = tween.generateData(60);
             this.index = 0;
@@ -246,7 +280,7 @@
 
             this.circle = new Phaser.Circle(x, y, 1);
 
-            var tween = this.game.make.tween(this.circle).to( { radius: this.maxRadius }, this.speed, Phaser.Easing.Linear.None);
+            let tween = this.game.make.tween(this.circle).to( { radius: this.maxRadius }, this.speed, Phaser.Easing.Linear.None);
             tween.yoyo(true);
             tween.interpolation(game.math.catmullRomInterpolation);
 
@@ -272,11 +306,23 @@
 
                 if (this.index === this.data.length)
                 {
+                    //for when the missile hits its point for the explosion to occur
                     this.alive = false;
                 }
                 else
                 {
                     this.circle.radius = this.data[this.index].radius;
+                }
+            }
+
+        },
+        checkCollision: function (missiles) {
+            for(var i = 0;i < missiles.length;i++)
+            {
+                if(this.circle.contains(missiles[i].x,missiles[i].y)&& missiles[i].alive)
+                {
+                    missiles[i].alive = false;
+
                 }
             }
 
@@ -331,7 +377,7 @@
 
             if (this.armory > 0)
             {
-                var rocket = new Rocket(this.game, this.rocketsBMD);
+                let rocket = new Rocket(this.game, this.rocketsBMD);
 
                 this.rockets.push(rocket);
 
@@ -342,7 +388,7 @@
 
         addExplosion: function (x, y) {
 
-            var explosion = new Explosion(this.game, this.explosionBMD);
+            let explosion = new Explosion(this.game, this.explosionBMD);
 
             this.explosions.push(explosion);
 
@@ -352,7 +398,10 @@
 
         update: function () {
 
-            for (var i = 0; i < this.rockets.length; i++)
+            //this.game.physics.arcade.collide(this,missileLauncher);
+
+
+            for (let i = 0; i < this.rockets.length; i++)
             {
                 if (this.rockets[i].alive)
                 {
@@ -360,7 +409,7 @@
                 }
             }
 
-            for (var i = 0; i < this.explosions.length; i++)
+            for (let i = 0; i < this.explosions.length; i++)
             {
                 if (this.explosions[i].alive)
                 {
@@ -368,39 +417,166 @@
                 }
             }
 
+        },
+
+        checkCollision: function (missiles) {
+
+            if (missiles.length === 0)
+            {
+                return;
+            }
+
+            for (var i = 0; i < this.explosions.length; i++)
+            {
+                if (this.explosions[i].alive)
+                {
+                    this.explosions[i].checkCollision(missiles);
+                }
+            }
+
         }
 
     }
 
+    RocketLauncher = function (game, bmd1, bmd2, silo1, silo2) {
 
-    var game = new Phaser.Game(640, 480, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+        this.game = game;
 
-    function preload() {
+        this.rocketsBMD = bmd1;
+        this.explosionBMD = bmd2;
+
+        this.rocketSpeed = 4;
+
+        this.silo1 = silo1;
+        this.silo2 = silo2;
+
+        this.rockets = [];
+        this.explosions = [];
+
+        return this;
 
     }
 
-    var rocketsBitmap;
-    var rocketsLayer;
+    RocketLauncher.prototype = {
 
-    var explosionsBitmap;
-    var explosionsLayer;
+        launch: function (pointer) {
 
-    var missilesBitmap;
-    var missilesLayer;
+            var rocket = this.getRocket();
 
-    var missileLauncher;
+            if (pointer.x < 320 && this.silo1.armory > 0) {
+                rocket.launch(this.silo1, pointer.x, pointer.y, this.rocketSpeed);
+                this.silo1.launch();
+            }
+            else if (this.silo2.armory > 0) {
+                rocket.launch(this.silo2, pointer.x, pointer.y, this.rocketSpeed);
+                this.silo2.launch();
+            }
 
-    var land;
-    var cities;
+        },
 
-    var rocketSpeed = 10;
+        getRocket: function () {
 
-    var missileSpeed = 10000;
-    var missileDelay = 10000;
+            for (var i = 0; i < this.rockets.length; i++) {
+                if (this.rockets[i].alive === false) {
+                    return this.rockets[i];
+                }
+            }
 
-    var m1;
-    var silo1;
-    var silo2;
+            //	Got this far? We need a new rocket
+            var rocket = new Rocket(this);
+
+            this.rockets.push(rocket);
+
+            return rocket;
+
+        },
+
+        addExplosion: function (x, y) {
+
+            this.getExplosion().explode(x, y);
+
+        },
+
+        getExplosion: function () {
+
+            for (var i = 0; i < this.explosions.length; i++) {
+                if (this.explosions[i].alive === false) {
+                    return this.explosions[i];
+                }
+            }
+
+            var explosion = new Explosion(this);
+
+            this.explosions.push(explosion);
+
+            return explosion;
+
+        },
+
+        update: function () {
+
+            for (var i = 0; i < this.rockets.length; i++) {
+                if (this.rockets[i].alive) {
+                    this.rockets[i].update();
+                }
+            }
+
+            for (var i = 0; i < this.explosions.length; i++) {
+                if (this.explosions[i].alive) {
+                    this.explosions[i].update();
+                }
+            }
+
+        },
+
+        checkCollision: function (missiles) {
+
+            if (missiles.length === 0) {
+                return;
+            }
+
+            for (var i = 0; i < this.explosions.length; i++) {
+                if (this.explosions[i].alive) {
+                    this.explosions[i].checkCollision(missiles);
+                }
+            }
+
+        }
+    }
+
+
+    let game = new Phaser.Game(640, 480, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+
+    function preload() {
+
+        game.load.image('title', 'assets/games/missilecommand/title-page.png');
+        game.load.image('land', 'assets/games/missilecommand/land.png');
+        game.load.image('marker', 'assets/games/missilecommand/marker.png');
+        game.load.image('missile', 'assets/games/missilecommand/missile.png');
+        game.load.image('sky', 'assets/skies/cavern2.png');
+        game.load.spritesheet('city', 'assets/games/missilecommand/city.png', 64, 36);
+
+    }
+
+    let rocketsBitmap;
+    let rocketsLayer;
+
+    let explosionsBitmap;
+    let explosionsLayer;
+
+    let missilesBitmap;
+    let missilesLayer;
+
+    let missileLauncher;
+    let rocketLauncher;
+
+    let land;
+    let cities;
+
+    let rocketSpeed = 10;
+
+    let silo1;
+    let silo2;
 
     function create() {
 
@@ -430,13 +606,17 @@
         silo1 = new Silo(game, rocketsBitmap, explosionsBitmap, 118);
         silo2 = new Silo(game, rocketsBitmap, explosionsBitmap, 518);
 
+
+
         missileLauncher = new MissileLauncher(game, missilesBitmap, cities);
+        //rocketLauncher = RocketLauncher(game,rocketsBitmap,explosionsBitmap,silo1,silo2)
 
         game.input.onDown.add(launchRocket, this);
 
     }
 
     function launchRocket(pointer) {
+
 
         if (pointer.x < 320)
         {
@@ -458,13 +638,16 @@
         silo1.update();
         silo2.update();
 
+        silo1.checkCollision(missileLauncher.numAliveMissiles());
+        silo2.checkCollision(missileLauncher.numAliveMissiles());
+
+
     }
 
-    function render() {
+    function render()
+    {
 
     }
-
-
 </script>
 
 </body>
