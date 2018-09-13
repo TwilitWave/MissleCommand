@@ -27,7 +27,7 @@
         this.missiles = [];
 
         this.total = 15;
-        this.speed = 15;
+        this.speed = 150;
 
         return this;
 
@@ -131,7 +131,7 @@
 
         this.pending = true;
         this.alive = false;
-        this.speed = 1;
+        this.speed = 1000;
 
         this.target = null;
         this.data = null;
@@ -247,7 +247,7 @@
 
         this.line = null;
         this.alive = false;
-        this.speed = 10;
+        this.speed = 10000;
 
         this.silo = null;
         this.data = null;
@@ -289,7 +289,7 @@
             {
                 this.bmd.draw('marker', this.destX - 4, this.destY - 4);
 
-                this.bmd.context.strokeStyle = '#0000ff';
+                this.bmd.context.strokeStyle = '#ffffff';
                 this.bmd.context.lineWidth = 1;
                 this.bmd.context.beginPath();
                 this.bmd.context.moveTo(this.line.start.x, this.line.start.y);
@@ -642,7 +642,7 @@
     let land;
     let cities;
 
-    let rocketSpeed = 10;
+    let rocketSpeed = 5;
 
     let silo1;
     let silo2;
@@ -678,7 +678,7 @@
 
 
         missileLauncher = new MissileLauncher(game, missilesBitmap, cities);
-        missileLauncher.startWave(25,60,5);
+        missileLauncher.startWave(1125,30,5);
 
         game.input.onDown.add(launchRocket, this);
 
