@@ -189,7 +189,6 @@
                 if (this.index === this.data.length)
                 {
                     this.alive = false;
-                    this.target.nuked();
                 }
                 else
                 {
@@ -679,8 +678,7 @@
 
 
         missileLauncher = new MissileLauncher(game, missilesBitmap, cities);
-        missileLauncher.startWave(12,60,4);
-        //rocketLauncher = RocketLauncher(game,rocketsBitmap,explosionsBitmap,silo1,silo2)
+        missileLauncher.startWave(25,60,5);
 
         game.input.onDown.add(launchRocket, this);
 
