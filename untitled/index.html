@@ -135,6 +135,7 @@
                 if (this.index === this.data.length)
                 {
                     this.alive = false;
+                    this.frame = 1;
                 }
                 else
                 {
@@ -321,7 +322,7 @@
             {
                 if(this.circle.contains(missiles[i].x,missiles[i].y)&& missiles[i].alive)
                 {
-                    missiles[i].alive = false;
+                    missiles[i].explode();
 
                 }
             }
@@ -633,10 +634,12 @@
 
         rocketsBitmap.clear();
         explosionsBitmap.clear();
+        missilesBitmap.clear();
 
-        missileLauncher.update();
         silo1.update();
         silo2.update();
+        missileLauncher.update();
+
 
         silo1.checkCollision(missileLauncher.numAliveMissiles());
         silo2.checkCollision(missileLauncher.numAliveMissiles());
