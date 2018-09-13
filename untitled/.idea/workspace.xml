@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bb80ca79-2ae1-4eee-accd-f5b1dc271d82" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -39,9 +40,23 @@
         <counts>
           <entry key="project.closed" value="1" />
           <entry key="project.open.time.3" value="1" />
-          <entry key="project.opened" value="1" />
+          <entry key="project.open.time.4" value="1" />
+          <entry key="project.opened" value="2" />
         </counts>
       </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="html" value="200" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="HTML" value="200" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.js.language.service.starts" />
+      <usages-collector id="statistics.file.extensions.open" />
+      <usages-collector id="statistics.file.types.open" />
     </session>
     <session id="-903967566">
       <usages-collector id="statistics.lifecycle.project">
@@ -80,8 +95,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/phaser.min.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="172">
-              <caret line="2" column="473427" selection-start-line="2" selection-start-column="473420" selection-end-line="2" selection-end-column="473427" />
+            <state>
+              <caret column="83" selection-start-column="83" selection-end-column="83" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -92,8 +107,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/phaser.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="772">
-              <caret line="30413" column="6" lean-forward="true" selection-start-line="30413" selection-end-line="30414" />
+            <state relative-caret-position="517021">
+              <caret line="30413" column="6" selection-start-line="30413" selection-end-line="30414" />
             </state>
           </provider>
         </entry>
@@ -101,8 +116,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="455">
-              <caret line="636" column="8" selection-start-line="636" selection-start-column="8" selection-end-line="636" selection-end-column="8" />
+            <state relative-caret-position="840">
+              <caret line="726" column="7" selection-start-line="726" selection-start-column="7" selection-end-line="726" selection-end-column="7" />
             </state>
           </provider>
         </entry>
@@ -157,9 +172,9 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="960" />
-    <option name="y" value="23" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-107" />
+    <option name="y" value="-22" />
     <option name="width" value="960" />
     <option name="height" value="1012" />
   </component>
@@ -209,14 +224,15 @@
       <workItem from="1536688590297" duration="396000" />
       <workItem from="1536716660887" duration="807000" />
       <workItem from="1536727193230" duration="17725000" />
+      <workItem from="1536851388796" duration="3131000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19032000" />
+    <option name="totallyTimeSpent" value="22163000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="960" y="23" width="960" height="1012" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.24945612" />
@@ -266,8 +282,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/phaser.min.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="172">
-          <caret line="2" column="473427" selection-start-line="2" selection-start-column="473420" selection-end-line="2" selection-end-column="473427" />
+        <state>
+          <caret column="83" selection-start-column="83" selection-end-column="83" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -276,15 +292,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/phaser.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="772">
-          <caret line="30413" column="6" lean-forward="true" selection-start-line="30413" selection-end-line="30414" />
+        <state relative-caret-position="517021">
+          <caret line="30413" column="6" selection-start-line="30413" selection-end-line="30414" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="455">
-          <caret line="636" column="8" selection-start-line="636" selection-start-column="8" selection-end-line="636" selection-end-column="8" />
+        <state relative-caret-position="840">
+          <caret line="726" column="7" selection-start-line="726" selection-start-column="7" selection-end-line="726" selection-end-column="7" />
         </state>
       </provider>
     </entry>

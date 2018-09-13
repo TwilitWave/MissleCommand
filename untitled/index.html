@@ -26,24 +26,59 @@
 
         this.missiles = [];
 
-        // this is where we launch the missiles(blue things)
-
-        this.game.time.events.loop(Phaser.Timer.SECOND * 2, this.launch, this);
+        this.total = 15;
+        this.speed = 15;
 
         return this;
-
 
     }
 
     MissileLauncher.prototype = {
 
-        launch: function () {
 
-            var m = new Missile(this.game, this.bmd);
+        startWave: function (total, speed, starting) {
 
-            this.missiles.push(m);
+            this.total = total;
+            this.speed = speed;
 
-            m.launch(this.cities.getRandom(), 10000);
+            this.launch(4, 0);
+
+            this.game.time.events.add(4000, this.launch, this, 4, 0);
+            this.game.time.events.add(4000, this.launch, this, 4, 250);
+
+        },
+        launch: function (qty, delay) {
+
+            for (var i = 0; i < qty; i++)
+            {
+                this.getMissile().launch(this.cities.getRandom(), this.speed, delay);
+
+                this.total--;
+
+                if (this.total === 0)
+                {
+                    console.log('wave over');
+                }
+            }
+
+        },
+
+        getMissile: function () {
+
+            for (var i = 0; i < this.missiles.length; i++)
+            {
+                if (this.missiles[i].alive === false)
+                {
+                    return this.missiles[i];
+                }
+            }
+
+            //	Got this far? We need a new missile
+            var missile = new Missile(this);
+
+            this.missiles.push(missile);
+
+            return missile;
 
         },
 
@@ -81,15 +116,22 @@
         },
     }
 
-    Missile = function (game, bmd) {
+    MissileLauncher.prototype.constructor = MissileLauncher;
 
-        this.game = game;
-        this.bmd = bmd;
+    Missile = function (launcher) {
 
-        this.x = 0;
-        this.y = 0;
+        this.launcher = launcher;
+        this.game = launcher.game;
+        this.bmd = launcher.bmd;
+
+        this.destX = 0;
+        this.destY = 0;
+
+        this.line = new Phaser.Line();
+
+        this.pending = true;
         this.alive = false;
-        this.speed = 5;
+        this.speed = 1;
 
         this.target = null;
         this.data = null;
@@ -101,65 +143,92 @@
 
     Missile.prototype = {
 
-        launch: function (target, speed) {
+        launch: function (target, speed, delay) {
 
-            this.x = game.world.randomX;
-            this.y = 0;
-            this.alive = true;
-            this.speed = speed;
+            if (delay > 0)
+            {
+                //	start timer here
+            }
 
             this.target = target;
 
-            let destination = { x: this.x, y: this.y };
+            var x = this.game.world.randomX;
 
-            let tween = this.game.make.tween(destination).to( { x: target.hitX, y: target.hitY }, speed, Phaser.Easing.Linear.None);
+            this.line.setTo(x, 0, x, 0);
+
+            this.speed = Math.floor(this.game.math.distance(this.line.start.x, this.line.start.y, target.hitX, target.hitY) * speed);
+
+            var tween = this.game.make.tween(this.line.end).to( { x: target.hitX, y: target.hitY }, this.speed, Phaser.Easing.Linear.None);
 
             this.data = tween.generateData(60);
             this.index = 0;
 
-            this.x = this.data[this.index].x;
-            this.y = this.data[this.index].y;
+            this.line.end.set(this.data[this.index].x, this.data[this.index].y);
+
+            this.alive = true;
 
         },
 
         update: function () {
 
-
             if (this.alive)
             {
-                this.bmd.context.fillStyle = '#ff0000';
-                this.bmd.context.fillRect(this.x, this.y, 1, 1);
+                this.bmd.context.strokeStyle = '#ff0000';
+                this.bmd.context.lineWidth = 1;
+                this.bmd.context.beginPath();
+                this.bmd.context.moveTo(this.line.start.x, this.line.start.y);
+                this.bmd.context.lineTo(this.line.end.x, this.line.end.y);
+                this.bmd.context.closePath();
+                this.bmd.context.stroke();
+
+                this.bmd.context.fillStyle = '#ffffff';
+                this.bmd.context.fillRect(this.line.end.x, this.line.end.y, 1, 1);
 
                 this.index++;
 
                 if (this.index === this.data.length)
                 {
                     this.alive = false;
-                    this.frame = 1;
+                    this.target.nuked();
                 }
                 else
                 {
-                    this.x = this.data[this.index].x;
-                    this.y = this.data[this.index].y;
+                    this.line.end.x = this.data[this.index].x;
+                    this.line.end.y = this.data[this.index].y;
                 }
 
             }
-            else
-            {
-                //this.bmd.context.fillStyle = '#000000';
-                //this.bmd.context.fillRect(this.x, this.y, 1, 1);
-            }
 
         },
+
 
         explode:function()
         {
             this.alive = false;
         }
 
-
-
     };
+
+
+    Object.defineProperty(Missile.prototype, "x", {
+
+        get: function () {
+            return this.line.end.x;
+        }
+
+    });
+
+    Object.defineProperty(Missile.prototype, "y", {
+
+        get: function () {
+            return this.line.end.y;
+        }
+
+    });
+
+
+
+
 
     Missile.prototype.constructor = Missile;
 
@@ -610,6 +679,7 @@
 
 
         missileLauncher = new MissileLauncher(game, missilesBitmap, cities);
+        missileLauncher.startWave(12,60,4);
         //rocketLauncher = RocketLauncher(game,rocketsBitmap,explosionsBitmap,silo1,silo2)
 
         game.input.onDown.add(launchRocket, this);
