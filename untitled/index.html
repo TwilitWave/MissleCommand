@@ -418,6 +418,19 @@
     City.prototype = Object.create(Phaser.Sprite.prototype);
     City.prototype.constructor = City;
 
+    GravityWell = function(game, x)
+    {
+        Phaser.Sprite.call(this,game,x,220,'gwell',0)
+
+        this.hitX = this.x + 32;
+        this.hitY = this.y + 30;
+
+        return this;
+    }
+
+    GravityWell.prototype = Object.create(Phaser.Sprite.prototype);
+    GravityWell.prototype.constructor = GravityWell;
+
 
     Silo = function (game, bmd1, bmd2, x) {
 
@@ -463,6 +476,14 @@
 
             explosion.explode(x, y);
 
+        },
+
+        accelerateToObject:function(obj1, obj2, speed) {
+            if (typeof speed === 'undefined') { speed = 60; }
+            var angle = Math.atan2(obj2.y - obj1.y, obj2.x - obj1.x);
+            obj1.body.rotation = angle + game.math.degToRad(90);  // correct angle of angry bullets (depends on the sprite used)
+            obj1.body.force.x = Math.cos(angle) * speed;    // accelerateToObject
+            obj1.body.force.y = Math.sin(angle) * speed;
         },
 
         update: function () {
@@ -517,6 +538,7 @@
         game.load.image('missile', 'assets/games/missilecommand/missile.png');
         game.load.image('sky', 'assets/skies/cavern2.png');
         game.load.spritesheet('city', 'assets/games/missilecommand/city.png', 64, 36);
+        game.load.image('gwell','/assets/gwell.png');
 
     }
 
@@ -534,6 +556,8 @@
     let land;
     let cities;
     let gravityWells;
+
+    let gravitywell;
 
     let rocketSpeed = 5;
 
@@ -565,9 +589,17 @@
         cities.add(new City(game, 402));
         cities.add(new City(game, 568));
 
+        game.physics.startSystem(Phaser.Physics.P2JS);
+        gravitywell = game.add.sprite(200,220,'gwell');
+        game.physics.p2.enable(gravitywell);
+        //gravitywell.body.immovable = true;
+
+
         silo1 = new Silo(game, rocketsBitmap, explosionsBitmap, 118);
         silo2 = new Silo(game, rocketsBitmap, explosionsBitmap, 518);
+        game.physics.p2.enable(silo1, false);
 
+        game.physics.p2.enable(silo2, false);
 
 
         missileLauncher = new MissileLauncher(game, missilesBitmap, cities);
@@ -591,6 +623,14 @@
 
     }
 
+    function accelerateToObject(obj1, obj2, speed) {
+        if (typeof speed === 'undefined') { speed = 60; }
+        var angle = Math.atan2(obj2.y - obj1.y, obj2.x - obj1.x);
+        obj1.body.rotation = angle + game.math.degToRad(90);  // correct angle of angry bullets (depends on the sprite used)
+        obj1.body.force.x = Math.cos(angle) * speed;    // accelerateToObject
+        obj1.body.force.y = Math.sin(angle) * speed;
+    }
+
     function update() {
 
         rocketsBitmap.clear();
@@ -599,6 +639,11 @@
 
         silo1.update();
         silo2.update();
+
+        //silo1.accelerateToObject(silo2,gravitywell,50);
+
+        //gravityWells.update();
+
         missileLauncher.update();
 
 
