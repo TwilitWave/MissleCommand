@@ -507,113 +507,6 @@
 
     }
 
-    RocketLauncher = function (game, bmd1, bmd2, silo1, silo2) {
-
-        this.game = game;
-
-        this.rocketsBMD = bmd1;
-        this.explosionBMD = bmd2;
-
-        this.rocketSpeed = 4;
-
-        this.silo1 = silo1;
-        this.silo2 = silo2;
-
-        this.rockets = [];
-        this.explosions = [];
-
-        return this;
-
-    }
-
-    RocketLauncher.prototype = {
-
-        launch: function (pointer) {
-
-            var rocket = this.getRocket();
-
-            if (pointer.x < 320 && this.silo1.armory > 0) {
-                rocket.launch(this.silo1, pointer.x, pointer.y, this.rocketSpeed);
-                this.silo1.launch();
-            }
-            else if (this.silo2.armory > 0) {
-                rocket.launch(this.silo2, pointer.x, pointer.y, this.rocketSpeed);
-                this.silo2.launch();
-            }
-
-        },
-
-        getRocket: function () {
-
-            for (var i = 0; i < this.rockets.length; i++) {
-                if (this.rockets[i].alive === false) {
-                    return this.rockets[i];
-                }
-            }
-
-            //	Got this far? We need a new rocket
-            var rocket = new Rocket(this);
-
-            this.rockets.push(rocket);
-
-            return rocket;
-
-        },
-
-        addExplosion: function (x, y) {
-
-            this.getExplosion().explode(x, y);
-
-        },
-
-        getExplosion: function () {
-
-            for (var i = 0; i < this.explosions.length; i++) {
-                if (this.explosions[i].alive === false) {
-                    return this.explosions[i];
-                }
-            }
-
-            var explosion = new Explosion(this);
-
-            this.explosions.push(explosion);
-
-            return explosion;
-
-        },
-
-        update: function () {
-
-            for (var i = 0; i < this.rockets.length; i++) {
-                if (this.rockets[i].alive) {
-                    this.rockets[i].update();
-                }
-            }
-
-            for (var i = 0; i < this.explosions.length; i++) {
-                if (this.explosions[i].alive) {
-                    this.explosions[i].update();
-                }
-            }
-
-        },
-
-        checkCollision: function (missiles) {
-
-            if (missiles.length === 0) {
-                return;
-            }
-
-            for (var i = 0; i < this.explosions.length; i++) {
-                if (this.explosions[i].alive) {
-                    this.explosions[i].checkCollision(missiles);
-                }
-            }
-
-        }
-    }
-
-
     let game = new Phaser.Game(640, 480, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
     function preload() {
@@ -637,10 +530,10 @@
     let missilesLayer;
 
     let missileLauncher;
-    let rocketLauncher;
 
     let land;
     let cities;
+    let gravityWells;
 
     let rocketSpeed = 5;
 
