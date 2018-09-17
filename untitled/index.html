@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -166,13 +166,15 @@
             this.line.end.set(this.data[this.index].x, this.data[this.index].y);
 
             this.alive = true;
-
+            
         },
 
         update: function () {
 
             if (this.alive)
             {
+                this.bmd.draw('enemymissile', this.data[this.index].x - 35, this.data[this.index].y - 15);
+
                 this.bmd.context.strokeStyle = '#ff0000';
                 this.bmd.context.lineWidth = 1;
                 this.bmd.context.beginPath();
@@ -280,14 +282,16 @@
             this.index = 0;
 
             this.alive = true;
-
+            
+            
         },
 
         update: function () {
 
             if (this.alive)
             {
-                this.bmd.draw('marker', this.destX - 4, this.destY - 4);
+                this.bmd.draw('target', this.destX - 20, this.destY - 20);
+                this.bmd.draw('missile', this.data[this.index].x - 20, this.data[this.index].y - 20);
 
                 this.bmd.context.strokeStyle = '#ffffff';
                 this.bmd.context.lineWidth = 1;
@@ -349,6 +353,8 @@
 
             this.circle = new Phaser.Circle(x, y, 1);
 
+            //this.add.sprite(x, y, 'explosion');
+
             let tween = this.game.make.tween(this.circle).to( { radius: this.maxRadius }, this.speed, Phaser.Easing.Linear.None);
             tween.yoyo(true);
             tween.interpolation(game.math.catmullRomInterpolation);
@@ -406,7 +412,7 @@
 
     City = function (game, x) {
 
-        Phaser.Sprite.call(this, game, x, 440, 'city', 0);
+        Phaser.Sprite.call(this, game, x, 1000, 'honey', 0);
 
         this.hitX = this.x + 32;
         this.hitY = this.y + 30;
@@ -440,7 +446,7 @@
         this.explosionBMD = bmd2;
 
         this.launchX = x;
-        this.launchY = 432;
+        this.launchY = 900;
 
         this.armory = 15;
 
@@ -528,18 +534,21 @@
 
     }
 
-    let game = new Phaser.Game(640, 480, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+    let game = new Phaser.Game(960, 1280, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
     function preload() {
+              
+        game.load.image('city', 'assets/foreground.png');
+        game.load.image('missile', 'assets/shelbee.png');
+        game.load.image('enemymissile', 'assets/wasp01.png');
+        game.load.image('sky', 'assets/sky.png');
+        game.load.spritesheet('explosion', 'assets/explosion.png', 128, 128);
+        game.load.image('hives', 'assets/pixelbeehivehalf.png');
+        game.load.image('honey', 'assets/TheLarvaShack_.png');
+        game.load.image('target', 'assets/target.png');
 
-        game.load.image('title', 'assets/games/missilecommand/title-page.png');
-        game.load.image('land', 'assets/games/missilecommand/land.png');
-        game.load.image('marker', 'assets/games/missilecommand/marker.png');
-        game.load.image('missile', 'assets/games/missilecommand/missile.png');
-        game.load.image('sky', 'assets/skies/cavern2.png');
-        game.load.spritesheet('city', 'assets/games/missilecommand/city.png', 64, 36);
-        game.load.image('gwell','/assets/gwell.png');
 
+        game.stage.smoothed = false;
     }
 
     let rocketsBitmap;
@@ -566,28 +575,29 @@
 
     function create() {
 
-        game.stage.smoothed = false;
 
         game.add.image(0, 0, 'sky');
+        
 
-        rocketsBitmap = game.add.bitmapData(800, 600);
-        missilesBitmap = game.add.bitmapData(800, 600);
-        explosionsBitmap = game.add.bitmapData(800, 600);
+        rocketsBitmap = game.add.bitmapData(960, 1280);
+        missilesBitmap = game.add.bitmapData(960, 1280);
+        explosionsBitmap = game.add.bitmapData(960, 1280);
 
         rocketsLayer = game.add.image(0, 0, rocketsBitmap);
         missilesLayer = game.add.image(0, 0, missilesBitmap);
         explosionsLayer = game.add.image(0, 0, explosionsBitmap);
 
-        land = game.add.image(0, 432, 'land');
+        land = game.add.image(0, 0, 'city');
+        hives = game.add.image(0, 0, 'hives');
 
         cities = game.add.group();
 
-        cities.add(new City(game, 8));
-        cities.add(new City(game, 168));
-        cities.add(new City(game, 246));
-        cities.add(new City(game, 324));
-        cities.add(new City(game, 402));
-        cities.add(new City(game, 568));
+        cities.add(new City(game, 200));
+        cities.add(new City(game, 300));
+        cities.add(new City(game, 400));
+        cities.add(new City(game, 500));
+        cities.add(new City(game, 600));
+        cities.add(new City(game, 700));
 
         game.physics.startSystem(Phaser.Physics.P2JS);
         gravitywell = game.add.sprite(200,220,'gwell');
@@ -595,8 +605,8 @@
         //gravitywell.body.immovable = true;
 
 
-        silo1 = new Silo(game, rocketsBitmap, explosionsBitmap, 118);
-        silo2 = new Silo(game, rocketsBitmap, explosionsBitmap, 518);
+        silo1 = new Silo(game, rocketsBitmap, explosionsBitmap, 100);
+        silo2 = new Silo(game, rocketsBitmap, explosionsBitmap, 860);
         game.physics.p2.enable(silo1, false);
 
         game.physics.p2.enable(silo2, false);
