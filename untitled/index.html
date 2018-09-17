@@ -173,7 +173,7 @@
 
             if (this.alive)
             {
-                this.bmd.draw('enemymissile', this.data[this.index].x - 35, this.data[this.index].y - 15);
+                this.bmd.draw('enemymissile', this.data[this.index].x - 35, this.data[this.index].y - 25);
                 
                 this.index++;
 
@@ -339,7 +339,9 @@
 
             this.circle = new Phaser.Circle(x, y, 1);
 
-            //this.add.sprite(x, y, 'explosion');
+            boomsprite.x = x - 64;
+            boomsprite.y = y - 64;
+            boomsprite.animations.play('boom');
 
             let tween = this.game.make.tween(this.circle).to( { radius: this.maxRadius }, this.speed, Phaser.Easing.Linear.None);
             tween.yoyo(true);
@@ -528,10 +530,11 @@
         game.load.image('missile', 'assets/shelbee.png');
         game.load.image('enemymissile', 'assets/wasp01.png');
         game.load.image('sky', 'assets/sky.png');
-        game.load.spritesheet('explosion', 'assets/explosion.png', 128, 128);
+        game.load.spritesheet('explosion', 'assets/explosion.png', 128, 128, 10);
         game.load.image('hives', 'assets/pixelbeehivehalf.png');
         game.load.image('honey', 'assets/TheLarvaShack_.png');
         game.load.image('target', 'assets/target.png');
+
 
 
         game.stage.smoothed = false;
@@ -603,6 +606,9 @@
 
         game.input.onDown.add(launchRocket, this);
 
+
+        boomsprite = this.add.sprite(0, 0, 'explosion', 9);
+        boomsprite.animations.add('boom', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 10, false);
     }
 
     function launchRocket(pointer) {
