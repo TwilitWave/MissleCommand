@@ -174,18 +174,7 @@
             if (this.alive)
             {
                 this.bmd.draw('enemymissile', this.data[this.index].x - 35, this.data[this.index].y - 15);
-
-                this.bmd.context.strokeStyle = '#ff0000';
-                this.bmd.context.lineWidth = 1;
-                this.bmd.context.beginPath();
-                this.bmd.context.moveTo(this.line.start.x, this.line.start.y);
-                this.bmd.context.lineTo(this.line.end.x, this.line.end.y);
-                this.bmd.context.closePath();
-                this.bmd.context.stroke();
-
-                this.bmd.context.fillStyle = '#ffffff';
-                this.bmd.context.fillRect(this.line.end.x, this.line.end.y, 1, 1);
-
+                
                 this.index++;
 
                 if (this.index === this.data.length)
@@ -286,23 +275,20 @@
             
         },
 
+        updateMyTween: function(demoTween,targetObject){
+            demoTween.timeline[0].vStart={x:targetObject.x,y:targetObject.y};
+            demoTween.timeline[0].duration=demoTween.timeline[0].duration-demoTween.timeline[0].dt;
+            demoTween.timeline[0].vEnd={x:400,y:200};
+            demoTween.timeline[0].dt=0;
+        },
+
+
         update: function () {
 
             if (this.alive)
             {
                 this.bmd.draw('target', this.destX - 20, this.destY - 20);
                 this.bmd.draw('missile', this.data[this.index].x - 20, this.data[this.index].y - 20);
-
-                this.bmd.context.strokeStyle = '#ffffff';
-                this.bmd.context.lineWidth = 1;
-                this.bmd.context.beginPath();
-                this.bmd.context.moveTo(this.line.start.x, this.line.start.y);
-                this.bmd.context.lineTo(this.line.end.x, this.line.end.y);
-                this.bmd.context.closePath();
-                this.bmd.context.stroke();
-
-                this.bmd.context.fillStyle = '#ffffff';
-                this.bmd.context.fillRect(this.line.end.x, this.line.end.y, 1, 1);
 
                 this.index++;
 
