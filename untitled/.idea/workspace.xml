@@ -69,12 +69,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="html" value="2889" />
+          <entry key="html" value="5020" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="HTML" value="2889" />
+          <entry key="HTML" value="5020" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -117,8 +117,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="259">
-              <caret line="176" column="16" selection-start-line="176" selection-start-column="16" selection-end-line="176" selection-end-column="16" />
+            <state relative-caret-position="257">
+              <caret line="616" column="25" selection-start-line="616" selection-start-column="25" selection-end-line="616" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -147,9 +147,7 @@
       <find>Silo</find>
       <find>alive</find>
       <find>numalive</find>
-      <find>launch</find>
       <find>Missilelauncher</find>
-      <find>explode</find>
       <find>addexplosion</find>
       <find>missilelauncher</find>
       <find>getexpl</find>
@@ -158,6 +156,10 @@
       <find>city</find>
       <find>accel</find>
       <find>accelerateto</find>
+      <find>launch</find>
+      <find>cities</find>
+      <find>cities.random</find>
+      <find>explode</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -233,7 +235,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="28425000" />
+    <option name="totallyTimeSpent" value="42754000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="960" height="1016" extended-state="0" />
@@ -303,8 +305,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="259">
-          <caret line="176" column="16" selection-start-line="176" selection-start-column="16" selection-end-line="176" selection-end-column="16" />
+        <state relative-caret-position="257">
+          <caret line="616" column="25" selection-start-line="616" selection-start-column="25" selection-end-line="616" selection-end-column="25" />
         </state>
       </provider>
     </entry>
