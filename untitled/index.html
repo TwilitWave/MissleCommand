@@ -176,13 +176,6 @@
         },
 
         updateMyTween: function(cities, newX, newY){
-            //this.templine = new Phaser.Line();
-            //var target = cities.getRandom();
-            //this.templine.setTo(x,0,x,0);
-            //var speed = 100;
-            //var tween = this.game.make.tween(this.templine.end).to( { x: target.hitX, y: target.hitY }, speed, Phaser.Easing.Linear.None);
-            //tween.start();
-            //this.temp = tween.generateData(60);
             this.target = cities.getRandom();
             //this.index = 0;
             var x = this.game.world.randomX;
@@ -206,10 +199,6 @@
             if (this.alive)
             {
                 this.bmd.draw('enemymissile', this.data[this.index].x - 35, this.data[this.index].y - 15);
-                //this.bmd.draw('enemymissile', this.temp[this.index].x - 35, this.temp[this.index].y - 15);
-
-
-                //.this.bmd.draw('enemymissile', this.data[this.index].x - 35, this.data[this.index].y - 25);
                 this.index++;
 
                 if (this.index === this.data.length)
@@ -220,9 +209,6 @@
                 {
                     this.line.end.x = this.data[this.index].x;
                     this.line.end.y = this.data[this.index].y;
-
-                    //this.templine.end.x = this.temp[this.index].x;
-                    //this.templine.end.y = this.temp[this.index].y;
                 }
 
             }
@@ -267,8 +253,8 @@
         this.game = game;
         this.bmd = bmd;
 
-        this.x = 0;
-        this.y = 0;
+        //this.x = 0;
+        //this.y = 0;
         this.launchX = 0;
         this.launchY = 0;
         this.destX = 0;
@@ -310,11 +296,6 @@
 
             this.data = this.tween.generateData(60);
 
-
-            //tween.updateTweenData('vEnd', (400,400));
-            //tween.start();
-
-            //this.destX = 5000;
             this.index = 0;
 
             this.alive = true;
@@ -322,11 +303,12 @@
             
         },
 
-        updateMyTween: function(demoTween,targetObject){
+        updateMyTween: function(){
             /*demoTween.timeline[0].vStart={x:targetObject.x,y:targetObject.y};
             demoTween.timeline[0].duration=demoTween.timeline[0].duration-demoTween.timeline[0].dt;
             demoTween.timeline[0].vEnd={x:400,y:200};
             demoTween.timeline[0].dt=0;*/
+            this.alive = false;
         },
 
 
@@ -354,6 +336,23 @@
         }
 
     };
+    Object.defineProperty(Rocket.prototype, "x", {
+
+        get: function () {
+            return this.line.end.x;
+        }
+
+    });
+
+    Object.defineProperty(Rocket.prototype, "y", {
+
+        get: function () {
+            return this.line.end.y;
+        }
+
+    });
+
+
 
     Rocket.prototype.constructor = Rocket;
 
@@ -570,12 +569,12 @@
 
         checkCollisionGrav: function (circle,missiles,cities) {
 
-            for (var i = 0; i < missiles.length; i++)
+            for (var i = 0; i < this.rockets.length; i++)
             {
-                    if(circle.contains(missiles[i].x,missiles[i].y))
+                //this.rockets[i].updateMyTween();
+                    if(circle.contains(this.rockets[i].x,this.rockets[i].y))
                     {
-                        //missiles[i].explode();
-                        missiles[i].updateMyTween(cities,missiles[i].x,missiles[i].y);
+                        this.rockets[i].updateMyTween();
 
                     }
             }
