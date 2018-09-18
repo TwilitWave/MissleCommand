@@ -405,6 +405,14 @@
 
             if (this.alive)
             {
+                this.bmd.context.fillStyle = '#ffffff';
+                this.bmd.context.alpha = 0.0;
+
+                this.bmd.context.beginPath();
+                this.bmd.context.arc(this.circle.x, this.circle.y, this.circle.radius, 0, Math.PI * 2, false);
+                this.bmd.context.closePath();
+                this.bmd.context.fill();
+
                 this.index++;
 
                 if (this.index === this.data.length)
