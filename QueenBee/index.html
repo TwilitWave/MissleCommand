@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -648,8 +648,7 @@
     }
     function preload() {
         
-        game.load.image('city', 'assets/foreground.png');
-        game.load.image('midhive', 'assets/top-01.png');  
+
         game.load.image('missile', 'assets/shelbee.png');
         game.load.image('enemymissile', 'assets/wasp01.png');
         game.load.spritesheet('explosion', 'assets/explosion.png', 128, 128, 10);
@@ -662,6 +661,8 @@
         game.load.image('comb2', 'assets/comb2.png');
         game.load.image('comb3', 'assets/comb3.png');
         game.load.image('comb4', 'assets/comb4.png');
+        game.load.image('city', 'assets/foreground.png');
+        game.load.image('midhive', 'assets/top-01.png');  
         game.load.image('GameStart', 'assets/GameStart.png');
         
         game.load.audio('explosionsound', ['assets/explosioncrash.mp3', 'assets/explosioncrash.ogg']);
@@ -741,9 +742,10 @@
         missilesLayer = game.add.image(0, 0, missilesBitmap);
         explosionsLayer = game.add.image(0, 0, explosionsBitmap);
 
+        midhive = game.add.image(0, 0, 'midhive');
         land = game.add.image(0, 0, 'city');
         hives = game.add.image(0, -80, 'hives');
-        midhive = game.add.image(0, 0, 'midhive');
+
 
         cities = game.add.group();
 
