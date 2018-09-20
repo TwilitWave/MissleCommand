@@ -607,7 +607,7 @@
 
             for (var i = 0; i < this.rockets.length; i++)
             {
-                if(circle.contains(this.rockets[i].x,this.rockets[i].y))
+                if(circle.getBounds().contains(this.rockets[i].x,this.rockets[i].y))
                     {
                         this.rockets[i].updateMyTween(circle,this.rockets[i].x,this.rockets[i].y);
 
