@@ -39,10 +39,10 @@
             this.total = total;
             this.speed = speed;
 
-            this.launch(4, 0);
+            this.launch(1, 0);
 
-            this.game.time.events.add(4000, this.launch, this, 4, 0);
-            this.game.time.events.add(4000, this.launch, this, 4, 250);
+            this.game.time.events.add(4000, this.launch, this, 1, 0);
+            this.game.time.events.add(4000, this.launch, this, 2, 250);
 
         },
         launch: function (qty, delay) {
@@ -392,8 +392,8 @@
         this.circle;
 
         this.alive = false;
-        this.maxRadius = 40;
-        this.speed = 750;
+        this.maxRadius = 45;
+        this.speed = 200;
 
         this.data = null;
         this.index = 0;
@@ -785,7 +785,7 @@
 
         //cities.destroy();
 
-        missileLauncher.startWave(1125,12,5);
+        //missileLauncher.startWave(1125,12,5);
 
         
         
@@ -844,15 +844,15 @@
     function launchRocket(pointer) {
 
 
-        if (pointer.x < 267)
+        if (pointer.x < 267 && pointer.y < 650)
         {
             silo1.launch(pointer.x, pointer.y, rocketSpeed);
         }
-        else if (pointer.x < 533)
+        else if (pointer.x < 533 && pointer.y < 650)
         {
             silo2.launch(pointer.x, pointer.y, rocketSpeed);
         }
-        else
+        else if (pointer.y < 650)
         {
             silo3.launch(pointer.x, pointer.y, rocketSpeed);
         }
