@@ -690,8 +690,8 @@
 
         game.physics.startSystem(Phaser.Physics.P2JS);
 
-        gravitywell = new Phaser.Circle(1000,250,128);
-        gravitywell2 = new Phaser.Circle(-200,250,128);
+        //gravitywell = new Phaser.Circle(1000,250,128);
+        //gravitywell2 = new Phaser.Circle(-200,250,128);
 
         silo1 = new Silo(game, rocketsBitmap, explosionsBitmap, 100);
         silo2 = new Silo(game, rocketsBitmap, explosionsBitmap, 400);
@@ -719,7 +719,6 @@
     {
         if(flip == 0)
         {
-            gravitywell = new Phaser.Circle(1400,250, 100)
             gravitywell.animations.play('woosh');
             gravitywell = new Phaser.Circle(1000,250, 128)
             flip = 1;
@@ -729,11 +728,6 @@
         }
         else
         {
-<<<<<<< HEAD
-=======
-            gravitywell = new Phaser.Circle(-250,250, 100)
-            //gravitywell = new Phaser.Circle(-250,250, 250)
->>>>>>> cd350a1d9a5e1bd4b8720a04c3517b6e0a2bcb62
             gravitywell2.animations.play('woosh');
             gravitywell2 = new Phaser.Circle(-200,250, 128)
             flip = 0;
