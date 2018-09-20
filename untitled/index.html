@@ -1,0 +1,909 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Queen Bee</title>
+    <script src="phaser.min.js"></script>
+    <script src="phaser.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+
+    //  The in-bound missiles
+
+    MissileLauncher = function (game, bmd, cities) {
+
+        this.game = game;
+        this.bmd = bmd;
+        this.cities = cities;
+
+        this.missiles = [];
+
+        this.total = 15;
+        this.speed = 150;
+
+        return this;
+
+    }
+
+    MissileLauncher.prototype = {
+
+
+        startWave: function (total, speed, starting) {
+
+            this.total = total;
+            this.speed = speed;
+
+            this.launch(4, 0);
+
+            this.game.time.events.add(4000, this.launch, this, 4, 0);
+            this.game.time.events.add(4000, this.launch, this, 4, 250);
+
+        },
+        launch: function (qty, delay) {
+
+            for (var i = 0; i < qty; i++)
+            {
+                this.getMissile().launch(this.cities.getRandom(), this.speed, delay);
+
+                this.total--;
+
+                if (this.total === 0)
+                {
+                    console.log('wave over');
+                }
+            }
+
+        },
+
+        getMissile: function () {
+
+            for (var i = 0; i < this.missiles.length; i++)
+            {
+                if (this.missiles[i].alive === false)
+                {
+                    return this.missiles[i];
+                }
+            }
+
+            //	Got this far? We need a new missile
+            var missile = new Missile(this);
+
+            this.missiles.push(missile);
+
+            return missile;
+
+        },
+
+        update: function () {
+
+            for (var i = 0; i < this.missiles.length; i++)
+            {
+                if (this.missiles[i].alive)
+                {
+                    this.missiles[i].update();
+                }
+            }
+
+        },
+
+        numAliveMissiles:function()
+        {
+            var temp = [];
+            for(var i = 0; i < this.missiles.length;i++)
+            {
+                if(this.missiles[i].alive == true)
+                {
+                    temp.push(this.missiles[i]);
+                }
+            }
+            return temp;
+        },
+
+        addExplosion: function (x, y) {
+
+            //let explosion = new Explosion(this.game, this.explosionBMD);
+
+            //this.getExplosion().explode(x, y);
+
+        },
+    }
+
+    MissileLauncher.prototype.constructor = MissileLauncher;
+
+    Missile = function (launcher) {
+
+        this.launcher = launcher;
+        this.game = launcher.game;
+        this.bmd = launcher.bmd;
+
+        this.destX = 0;
+        this.destY = 0;
+
+        this.line = new Phaser.Line();
+
+        this.pending = true;
+        this.alive = false;
+        this.speed = 1000;
+        this.tween = null;
+
+        this.target = null;
+        this.data = null;
+        this.index = 0;
+        this.temp = null;
+        this.templine = null;
+
+        return this;
+
+    }
+
+    Missile.prototype = {
+
+        launch: function (target, speed, delay) {
+
+
+
+            if (delay > 0)
+            {
+                //	start timer here
+            }
+
+            this.target = target;
+
+            var x = this.game.world.randomX;
+
+            this.line.setTo(x, 0, x, 0);
+
+            this.speed = Math.floor(this.game.math.distance(this.line.start.x, this.line.start.y, target.hitX, target.hitY) * speed);
+
+             this.tween = this.game.make.tween(this.line.end).to( { x: target.hitX, y: target.hitY }, this.speed, Phaser.Easing.Linear.None);
+
+            this.index = 0;
+            this.data = this.tween.generateData(60);
+
+
+            this.line.end.set(this.data[this.index].x, this.data[this.index].y);
+
+            this.alive = true;
+            
+        },
+
+        updateMyTween: function(cities, newX, newY){
+            this.target = cities.getRandom();
+            //this.index = 0;
+            var x = this.game.world.randomX;
+            this.line.setTo(x, 0, x, 0);
+            this.speed = Math.floor(this.game.math.distance(this.line.start.x, this.line.start.y, this.target.hitX, this.target.hitY) * 9);
+
+            this.tween = this.game.make.tween(this.line.end).to( { x: this.target.hitX, y: this.target.hitY }, this.speed, Phaser.Easing.Linear.None);
+
+            //this.index = 0;
+            this.data = this.tween.generateData(60);
+
+
+            this.line.end.set(this.data[this.index].x, this.data[this.index].y);
+
+
+
+
+        },
+
+        update: function () {
+
+            if (this.alive)
+            {
+                this.bmd.draw('enemymissile', this.data[this.index].x - 35, this.data[this.index].y - 15);
+                this.index++;
+
+                if (this.index === this.data.length)
+                {
+                    this.alive = false;
+                }
+                else
+                {
+                    this.line.end.x = this.data[this.index].x;
+                    this.line.end.y = this.data[this.index].y;
+                }
+
+            }
+
+        },
+
+
+        explode:function()
+        {
+            this.alive = false;
+        }
+
+    };
+
+
+    Object.defineProperty(Missile.prototype, "x", {
+
+        get: function () {
+            return this.line.end.x;
+        }
+
+    });
+
+    Object.defineProperty(Missile.prototype, "y", {
+
+        get: function () {
+            return this.line.end.y;
+        }
+
+    });
+
+
+
+
+
+    Missile.prototype.constructor = Missile;
+
+    //	The rockets you fire at the missiles
+
+    Rocket = function (game, bmd) {
+
+        this.game = game;
+        this.bmd = bmd;
+
+        //this.x = 0;
+        //this.y = 0;
+        this.launchX = 0;
+        this.launchY = 0;
+        this.destX = 0;
+        this.destY = 0;
+
+        this.line = null;
+        this.alive = false;
+        this.speed = 10000;
+
+        this.tween = null;
+
+        this.silo = null;
+        this.data = null;
+        this.index = 0;
+
+        return this;
+
+    }
+
+    Rocket.prototype = {
+
+        launch: function (silo, destX, destY, speed) {
+
+            this.silo = silo;
+            this.launchX = silo.launchX;
+            this.launchY = silo.launchY;
+
+            this.destX = destX;
+            this.destY = destY;
+
+            this.line = new Phaser.Line(this.launchX, this.launchY, this.launchX, this.launchY);
+
+            this.speed = Math.floor(this.game.math.distance(this.line.start.x, this.line.start.y, destX, destY) * speed);
+
+            let destination = { x: this.launchX, y: this.launchY };
+
+            this.tween = this.game.make.tween(destination).to( { x: this.destX, y: this.destY }, this.speed, Phaser.Easing.Linear.None);
+
+
+            this.data = this.tween.generateData(60);
+
+            this.index = 0;
+
+            this.alive = true;
+            
+            
+        },
+
+        updateMyTween: function(circle, newX, newY){
+
+            var x = 0;
+            var y = 0;
+
+            if(newX >= 0 && newX <= 400)
+            {
+                x = game.rnd.integerInRange(newX+ 150, newX + 250);
+                y = game.rnd.integerInRange(newY - 50, newY - 215);
+
+                let destination = { x: newX, y: newY};
+
+                this.tween = this.game.make.tween(destination).to( { x: x, y: y}, this.speed, Phaser.Easing.Linear.None, true);
+                this.data = this.tween.generateData(60);
+                this.tween.start();
+            }
+
+            else if(newX > 400 && newX <= 800)
+            {
+                x = game.rnd.integerInRange(newX - 150, newX - 250);
+                y = game.rnd.integerInRange(newY - 50, newY - 215);
+                let destination = { x: newX, y: newY};
+
+                this.tween = this.game.make.tween(destination).to( { x: x, y: y}, this.speed, Phaser.Easing.Linear.None, true);
+                this.data = this.tween.generateData(60);
+                this.tween.start();
+            }
+
+
+        },
+
+
+
+        update: function () {
+
+            if (this.alive)
+            {
+                this.bmd.draw('target', this.destX - 20, this.destY - 20);
+                this.bmd.draw('missile', this.data[this.index].x - 20, this.data[this.index].y - 20);
+
+                this.index++;
+
+                if (this.index === this.data.length)
+                {
+                    this.alive = false;
+                    this.silo.addExplosion(this.line.end.x, this.line.end.y);
+                }
+                else
+                {
+                    this.line.end.x = this.data[this.index].x;
+                    this.line.end.y = this.data[this.index].y;
+                }
+            }
+
+        }
+
+    };
+    Object.defineProperty(Rocket.prototype, "x", {
+
+        get: function () {
+            return this.line.end.x;
+        }
+
+    });
+
+    Object.defineProperty(Rocket.prototype, "y", {
+
+        get: function () {
+            return this.line.end.y;
+        }
+
+    });
+
+
+
+    Rocket.prototype.constructor = Rocket;
+
+
+    //	The resulting explosions
+
+    Explosion = function (game, bmd) {
+
+        this.game = game;
+        this.bmd = bmd;
+
+        this.x = 0;
+        this.y = 0;
+        this.circle;
+
+        this.alive = false;
+        this.maxRadius = 40;
+        this.speed = 750;
+
+        this.data = null;
+        this.index = 0;
+
+        return this;
+
+    }
+
+    Explosion.prototype = {
+
+        explode: function (x, y) {
+
+            this.circle = new Phaser.Circle(x, y, 1);
+
+            boomsprite.x = x - 64;
+            boomsprite.y = y - 64;
+            boomsprite.animations.play('boom');
+            explosionsound.play();
+
+            let tween = this.game.make.tween(this.circle).to( { radius: this.maxRadius }, this.speed, Phaser.Easing.Linear.None);
+            tween.yoyo(true);
+            tween.interpolation(game.math.catmullRomInterpolation);
+
+            this.alive = true;
+
+            this.data = tween.generateData(60);
+            this.index = 0;
+
+        },
+
+        update: function () {
+
+            if (this.alive)
+            {
+                this.bmd.context.fillStyle = '#ffffff';
+                this.bmd.context.alpha = 0.0;
+
+                this.bmd.context.beginPath();
+                this.bmd.context.arc(this.circle.x, this.circle.y, this.circle.radius, 0, Math.PI * 2, false);
+                this.bmd.context.closePath();
+                this.bmd.context.fill();
+
+                this.index++;
+
+                if (this.index === this.data.length)
+                {
+                    //for when the missile hits its point for the explosion to occur
+                    this.alive = false;
+                }
+                else
+                {
+                    this.circle.radius = this.data[this.index].radius;
+                }
+            }
+
+        },
+        checkCollision: function (missiles, text) {
+            for(var i = 0;i < missiles.length;i++)
+            {
+                if(this.circle.contains(missiles[i].x,missiles[i].y)&& missiles[i].alive)
+                {
+                    score = score + 100;
+
+                    //text.setText("Score - ");
+                    missiles[i].explode();
+
+                }
+
+            }
+
+        }
+
+    };
+
+    Explosion.prototype.constructor = Explosion;
+
+
+
+
+    City = function (game, x) {
+
+        Phaser.Sprite.call(this, game, x, 750, 'comb1', 0);
+
+        this.hitX = this.x + 10;
+        this.hitY = this.y + 10;
+
+        return this;
+
+    }
+
+    City.prototype = Object.create(Phaser.Sprite.prototype);
+    City.prototype.constructor = City;
+
+    GravityWell = function(game, x)
+    {
+        Phaser.Sprite.call(this,game,x,128,'gwell',0)
+
+        this.hitX = this.x - 32;
+        this.hitY = this.y - 30;
+
+        return this;
+    }
+
+    GravityWell.prototype = Object.create(Phaser.Sprite.prototype);
+    GravityWell.prototype.constructor = GravityWell;
+
+    GravityWell2 = function(game, x)
+    {
+        Phaser.Sprite.call(this,game,x,128,'gwell2',0)
+
+        this.hitX = this.x + 32;
+        this.hitY = this.y + 30;
+
+        return this;
+    }
+
+    GravityWell2.prototype = Object.create(Phaser.Sprite.prototype);
+    GravityWell2.prototype.constructor = GravityWell2;
+
+    Silo = function (game, bmd1, bmd2, x) {
+
+        this.game = game;
+
+        this.rocketsBMD = bmd1;
+        this.explosionBMD = bmd2;
+
+        this.launchX = x;
+        this.launchY = 550;
+
+        this.armory = 15;
+
+        this.rockets = [];
+        this.explosions = [];
+
+        return this;
+
+    }
+
+    Silo.prototype.constructor = Silo;
+
+    Silo.prototype = {
+
+        launch: function (x, y, speed) {
+
+            if (this.armory > 0)
+            {
+                let rocket = new Rocket(this.game, this.rocketsBMD);
+
+                this.rockets.push(rocket);
+
+                rocket.launch(this, x, y, speed);
+            }
+
+        },
+
+        addExplosion: function (x, y) {
+
+            let explosion = new Explosion(this.game, this.explosionBMD);
+
+            this.explosions.push(explosion);
+
+            explosion.explode(x, y);
+
+        },
+
+        accelerateToObject:function(obj1, obj2, speed) {
+            if (typeof speed === 'undefined') { speed = 60; }
+            var angle = Math.atan2(obj2.y - obj1.y, obj2.x - obj1.x);
+            obj1.body.rotation = angle + game.math.degToRad(90);  // correct angle of angry bullets (depends on the sprite used)
+            obj1.body.force.x = Math.cos(angle) * speed;    // accelerateToObject
+            obj1.body.force.y = Math.sin(angle) * speed;
+        },
+
+        update: function () {
+
+            //this.game.physics.arcade.collide(this,missileLauncher);
+
+
+            for (let i = 0; i < this.rockets.length; i++)
+            {
+                if (this.rockets[i].alive)
+                {
+                    this.rockets[i].update();
+                }
+            }
+
+            for (let i = 0; i < this.explosions.length; i++)
+            {
+                if (this.explosions[i].alive)
+                {
+                    this.explosions[i].update();
+                }
+            }
+
+        },
+
+        checkCollision: function (missiles, text) {
+
+
+
+            if (missiles.length === 0)
+            {
+                return;
+            }
+
+            for (var i = 0; i < this.explosions.length; i++)
+            {
+                if (this.explosions[i].alive)
+                {
+
+
+                    this.explosions[i].checkCollision(missiles, text);
+                }
+            }
+
+        },
+
+        checkcities:function(missiles,cities)
+        {
+            for(var i = 0; i< missiles.length; i++)
+            {
+                for(var j = 0; j<cities.children.length;j++)
+                {
+                    if(cities.children[j].getBounds().contains(missiles[i].x,missiles[i].y))
+                    {
+                        baselost.play();
+                        cities.children[j].destroy();
+                        combs.children[j].destroy();
+                    }
+                }
+            }
+        },
+
+        checkCollisionGrav: function (circle,missiles,cities) {
+
+            for (var i = 0; i < this.rockets.length; i++)
+            {
+                if(circle.getBounds().contains(this.rockets[i].x,this.rockets[i].y))
+                    {
+                        this.rockets[i].updateMyTween(circle,this.rockets[i].x,this.rockets[i].y);
+
+                    }
+            }
+
+        }
+
+    }
+
+    let game = new Phaser.Game(800, 900, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+    game.global = {
+        score : 0,
+    }
+    function preload() {
+        game.load.image('city', 'assets/foreground.png');
+        game.load.image('midhive', 'assets/top-01.png');  
+        game.load.image('missile', 'assets/shelbee.png');
+        game.load.image('enemymissile', 'assets/wasp01.png');
+        game.load.spritesheet('explosion', 'assets/explosion.png', 128, 128, 10);
+        game.load.image('hives', 'assets/pixelbeehivehalf.png');
+        game.load.image('honey', 'assets/TheLarvaShack_.png');
+        game.load.image('target', 'assets/target.png');
+        game.load.spritesheet('wind', 'assets/wind.png', 200, 128, 27);
+        game.load.spritesheet('queen', 'assets/queen.png', 256, 256, 13);
+        game.load.image('comb1', 'assets/comb1.png');
+        game.load.image('comb2', 'assets/comb2.png');
+        game.load.image('comb3', 'assets/comb3.png');
+        game.load.image('comb4', 'assets/comb4.png');
+        
+        game.load.audio('explosionsound', ['assets/explosioncrash.mp3', 'assets/explosioncrash.ogg']);
+        game.load.audio('gameover', ['assets/GameOver.mp3', 'assets/GameOver.ogg']);
+        game.load.audio('baselost', ['assets/losebasegong.mp3', 'assets/losebasegong.ogg']);
+        game.load.audio('title', ['assets/QueenBeeTitleScreen.mp3', 'assets/QueenBeeTitleScreen.ogg']);
+        game.load.audio('windysound', ['assets/wind.mp3', 'assets/wind.ogg']);
+
+        game.stage.smoothed = false;
+    }
+
+    let rocketsBitmap;
+    let rocketsLayer;
+
+    let explosionsBitmap;
+    let explosionsLayer;
+
+    let missilesBitmap;
+    let missilesLayer;
+
+    let missileLauncher;
+
+    let land;
+    let cities;
+
+    let gravitywell;
+    let gravitywell2;
+    let rocketSpeed = 2.5;
+
+    let silo1;
+    let silo2;
+    let silo3;
+
+    let timer = 400;
+    let spawnTimer = 0;
+    let flip = 0;
+
+    let score = 0;
+
+    let text;
+
+    function create() {
+
+        explosionsound = game.add.audio('explosionsound');
+        gameover = game.add.audio('gameover');
+        baselost = game.add.audio('baselost');
+        title = game.add.audio('title');
+        windysound = game.add.audio('windysound');
+
+        game.stage.backgroundColor = '#aed1f5';
+        
+
+        rocketsBitmap = game.add.bitmapData(800, 900);
+        missilesBitmap = game.add.bitmapData(800, 900);
+        explosionsBitmap = game.add.bitmapData(800, 900);
+
+        rocketsLayer = game.add.image(0, 0, rocketsBitmap);
+        missilesLayer = game.add.image(0, 0, missilesBitmap);
+        explosionsLayer = game.add.image(0, 0, explosionsBitmap);
+
+        land = game.add.image(0, 0, 'city');
+        hives = game.add.image(0, -80, 'hives');
+        midhive = game.add.image(0, 0, 'midhive');
+
+        cities = game.add.group();
+
+        cities.add(new City(game, 130));
+        cities.add(new City(game, 250));
+        cities.add(new City(game, 525));
+        cities.add(new City(game, 640));
+
+        combs = game.add.group();
+
+        combs.add(game.add.image(0, 0, 'comb1'));
+        combs.add(game.add.image(0, 0, 'comb2'));
+        combs.add(game.add.image(0, 0, 'comb3'));
+        combs.add(game.add.image(0, 0, 'comb4'));
+
+        //cities.children[0].destroy();
+
+
+        game.physics.startSystem(Phaser.Physics.P2JS);
+
+
+
+        silo1 = new Silo(game, rocketsBitmap, explosionsBitmap, 100);
+        silo2 = new Silo(game, rocketsBitmap, explosionsBitmap, 400);
+        silo3 = new Silo(game, rocketsBitmap, explosionsBitmap, 700);
+
+
+        text = game.add.text(0,0, "Score: 0", {
+            font: "32px Arial",
+            fill: "black",
+            align: "center"
+        });
+
+
+
+        missileLauncher = new MissileLauncher(game, missilesBitmap, cities);
+
+        //cities.destroy();
+
+        missileLauncher.startWave(1125,12,5);
+
+        game.input.onDown.add(launchRocket, this);
+
+
+        boomsprite = this.add.sprite(0, 0, 'explosion', 9);
+        boomsprite.animations.add('boom', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 10, false);
+
+        queen = this.add.sprite(272, 644, 'queen', 0);
+        queen.animations.add('diva', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 10, false);
+        queen.animations.play('diva');
+
+        //gravitywell = new Phaser.Circle(1000,250,200);
+        //gravitywell2 = new Phaser.Circle(-200,250,200);
+
+        gravitywell = this.add.sprite(1000, 300, 'wind', 26);
+        gravitywell.animations.add('woosh', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
+
+        gravitywell2 = this.add.sprite(-200, 300, 'wind', 26);
+        gravitywell2.animations.add('woosh', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
+    }
+
+    function launchGust()
+    {
+        if(flip == 0)
+        {
+            gravitywell.x = 1000
+            gravitywell.y = 300
+            gravitywell.animations.play('woosh');
+            flip = 1;
+            var tween = game.add.tween(gravitywell).to( { x: -200, y: 300 }, 3000, Phaser.Easing.Linear.None);
+            tween.start();
+            windysound.play();
+
+        }
+        else
+        {
+            gravitywell2.x = -250
+            gravitywell2.y = 300
+            gravitywell2.animations.play('woosh');
+            flip = 0;
+            var tween = game.add.tween(gravitywell2).to( { x: 1000, y: 300 }, 3000, Phaser.Easing.Linear.None);
+            tween.start();
+            windysound.play();
+        }
+
+    }
+
+    function launchRocket(pointer) {
+
+
+        if (pointer.x < 267)
+        {
+            silo1.launch(pointer.x, pointer.y, rocketSpeed);
+        }
+        else if (pointer.x < 533)
+        {
+            silo2.launch(pointer.x, pointer.y, rocketSpeed);
+        }
+        else
+        {
+            silo3.launch(pointer.x, pointer.y, rocketSpeed);
+        }
+
+    }
+
+    function accelerateToObject(obj1, obj2, speed) {
+        if (typeof speed === 'undefined') { speed = 60; }
+        var angle = Math.atan2(obj2.y - obj1.y, obj2.x - obj1.x);
+        obj1.body.rotation = angle + game.math.degToRad(90);  // correct angle of angry bullets (depends on the sprite used)
+        obj1.body.force.x = Math.cos(angle) * speed;    // accelerateToObject
+        obj1.body.force.y = Math.sin(angle) * speed;
+    }
+
+    function update() {
+
+        
+
+        timer++;
+        spawnTimer++;
+
+        text.setText("Score: " +score);
+        if(timer >= 240)
+        {
+            launchGust();
+            timer = 0;
+        }
+
+        if(spawnTimer >= 320)
+        {
+            missileLauncher.startWave(1125,12,5);
+            spawnTimer = 0;
+        }
+        rocketsBitmap.clear();
+        explosionsBitmap.clear();
+        missilesBitmap.clear();
+
+        silo1.update();
+        silo2.update();
+        silo3.update();
+
+
+        missileLauncher.update();
+
+        silo1.checkCollisionGrav(gravitywell, missileLauncher.numAliveMissiles(),cities);
+        silo2.checkCollisionGrav(gravitywell, missileLauncher.numAliveMissiles(),cities);
+        silo3.checkCollisionGrav(gravitywell, missileLauncher.numAliveMissiles(),cities);
+
+        silo1.checkCollisionGrav(gravitywell2, missileLauncher.numAliveMissiles(),cities);
+        silo2.checkCollisionGrav(gravitywell2, missileLauncher.numAliveMissiles(),cities);
+        silo3.checkCollisionGrav(gravitywell2, missileLauncher.numAliveMissiles(),cities);
+
+
+        silo1.checkCollision(missileLauncher.numAliveMissiles(), text);
+        silo2.checkCollision(missileLauncher.numAliveMissiles()),text;
+        silo3.checkCollision(missileLauncher.numAliveMissiles(),text);
+
+        silo1.checkcities(missileLauncher.numAliveMissiles(),cities);
+        silo2.checkcities(missileLauncher.numAliveMissiles(),cities);
+        silo3.checkcities(missileLauncher.numAliveMissiles(),cities);
+
+        if(cities.children.length == 0)
+        {
+            gameover.play();
+            game.destroy();
+        }
+
+
+        //silo1.checkCityCollision(missileLauncher.numAliveMissiles())
+
+
+    }
+
+    function render()
+    {
+        game.debug.geom(gravitywell,'#ffcc66');
+        game.debug.geom(gravitywell2,'#ffcc66');
+
+    }
+</script>
+
+</body>
+</html>
