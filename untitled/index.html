@@ -487,8 +487,8 @@
     {
         Phaser.Sprite.call(this,game,x,128,'gwell',0)
 
-        this.hitX = this.x + 32;
-        this.hitY = this.y + 30;
+        this.hitX = this.x - 32;
+        this.hitY = this.y - 30;
 
         return this;
     }
@@ -500,8 +500,8 @@
     {
         Phaser.Sprite.call(this,game,x,128,'gwell2',0)
 
-        this.hitX = this.x - 32;
-        this.hitY = this.y - 30;
+        this.hitX = this.x + 32;
+        this.hitY = this.y + 30;
 
         return this;
     }
@@ -720,7 +720,7 @@
         if(flip == 0)
         {
             gravitywell.animations.play('woosh');
-            gravitywell = new Phaser.Circle(1000,250, 128)
+            // gravitywell = new Phaser.Circle(1000,250, 128)
             flip = 1;
             var tween = game.add.tween(gravitywell).to( { x: -200, y: 250 }, 6000, Phaser.Easing.Linear.None);
             tween.start();
@@ -729,7 +729,7 @@
         else
         {
             gravitywell2.animations.play('woosh');
-            gravitywell2 = new Phaser.Circle(-200,250, 128)
+            // gravitywell2 = new Phaser.Circle(-200,250, 128)
             flip = 0;
             var tween = game.add.tween(gravitywell2).to( { x: 1000, y: 250 }, 6000, Phaser.Easing.Linear.None);
             tween.start();
