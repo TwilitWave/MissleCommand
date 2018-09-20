@@ -467,7 +467,7 @@
 
     City = function (game, x) {
 
-        Phaser.Sprite.call(this, game, x, 1000, 'honey', 0);
+        Phaser.Sprite.call(this, game, x, 800, 'honey', 0);
 
         this.hitX = this.x + 32;
         this.hitY = this.y + 30;
@@ -501,7 +501,7 @@
         this.explosionBMD = bmd2;
 
         this.launchX = x;
-        this.launchY = 900;
+        this.launchY = 550;
 
         this.armory = 15;
 
@@ -602,18 +602,18 @@
 
     }
 
-    let game = new Phaser.Game(960, 1280, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+    let game = new Phaser.Game(800, 900, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
     function preload() {
               
         game.load.image('city', 'assets/foreground.png');
         game.load.image('missile', 'assets/shelbee.png');
         game.load.image('enemymissile', 'assets/wasp01.png');
-        game.load.image('sky', 'assets/sky.png');
         game.load.spritesheet('explosion', 'assets/explosion.png', 128, 128, 10);
         game.load.image('hives', 'assets/pixelbeehivehalf.png');
         game.load.image('honey', 'assets/TheLarvaShack_.png');
         game.load.image('target', 'assets/target.png');
+        game.load.spritesheet('wind', 'assets/wind.png', 100, 64, 27);
 
 
 
@@ -640,6 +640,7 @@
 
     let silo1;
     let silo2;
+    let silo3;
 
     let timer = 400;
     let spawnTimer = 0;
@@ -648,12 +649,12 @@
     function create() {
 
 
-        game.add.image(0, 0, 'sky');
+        game.stage.backgroundColor = '#aed1f5';
         
 
-        rocketsBitmap = game.add.bitmapData(960, 1280);
-        missilesBitmap = game.add.bitmapData(960, 1280);
-        explosionsBitmap = game.add.bitmapData(960, 1280);
+        rocketsBitmap = game.add.bitmapData(800, 900);
+        missilesBitmap = game.add.bitmapData(800, 900);
+        explosionsBitmap = game.add.bitmapData(800, 900);
 
         rocketsLayer = game.add.image(0, 0, rocketsBitmap);
         missilesLayer = game.add.image(0, 0, missilesBitmap);
@@ -664,19 +665,18 @@
 
         cities = game.add.group();
 
-        cities.add(new City(game, 200));
+        cities.add(new City(game, 150));
         cities.add(new City(game, 300));
         cities.add(new City(game, 400));
-        cities.add(new City(game, 500));
-        cities.add(new City(game, 600));
-        cities.add(new City(game, 700));
+        cities.add(new City(game, 650));
 
         game.physics.startSystem(Phaser.Physics.P2JS);
 
         gravitywell = new Phaser.Circle(1400,250,150);
 
         silo1 = new Silo(game, rocketsBitmap, explosionsBitmap, 100);
-        silo2 = new Silo(game, rocketsBitmap, explosionsBitmap, 860);
+        silo2 = new Silo(game, rocketsBitmap, explosionsBitmap, 400);
+        silo3 = new Silo(game, rocketsBitmap, explosionsBitmap, 700);
 
 
 
@@ -688,6 +688,9 @@
 
         boomsprite = this.add.sprite(0, 0, 'explosion', 9);
         boomsprite.animations.add('boom', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 10, false);
+
+        windy = this.add.sprite(0, 0, 'wind', 26);
+        windy.animations.add('woosh', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
     }
 
     function launchGust()
@@ -713,13 +716,17 @@
     function launchRocket(pointer) {
 
 
-        if (pointer.x < 480)
+        if (pointer.x < 267)
         {
             silo1.launch(pointer.x, pointer.y, rocketSpeed);
         }
-        else
+        else if (pointer.x < 533)
         {
             silo2.launch(pointer.x, pointer.y, rocketSpeed);
+        }
+        else
+        {
+            silo3.launch(pointer.x, pointer.y, rocketSpeed);
         }
 
     }
@@ -754,15 +761,18 @@
 
         silo1.update();
         silo2.update();
+        silo3.update();
 
         missileLauncher.update();
 
         silo1.checkCollisionGrav(gravitywell, missileLauncher.numAliveMissiles(),cities);
         silo2.checkCollisionGrav(gravitywell, missileLauncher.numAliveMissiles(),cities);
+        silo3.checkCollisionGrav(gravitywell, missileLauncher.numAliveMissiles(),cities);
 
 
         silo1.checkCollision(missileLauncher.numAliveMissiles());
         silo2.checkCollision(missileLauncher.numAliveMissiles());
+        silo3.checkCollision(missileLauncher.numAliveMissiles());
 
 
     }
