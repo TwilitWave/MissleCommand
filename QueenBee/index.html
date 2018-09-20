@@ -891,10 +891,10 @@
         silo2.checkcities(missileLauncher.numAliveMissiles(),cities);
         silo3.checkcities(missileLauncher.numAliveMissiles(),cities);
 
-        if(cities.children.length == 0)
+        if(cities.children.length == 1)
         {
             gameover.play();
-            game.destroy();
+            //game.destroy();
         }
 
 
