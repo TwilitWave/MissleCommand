@@ -458,6 +458,7 @@
                     missiles[i].explode();
 
                 }
+
             }
 
         }
@@ -603,6 +604,20 @@
 
         },
 
+        checkcities:function(missiles,cities)
+        {
+            for(var i = 0; i< missiles.length; i++)
+            {
+                for(var j = 0; j<cities.children.length;j++)
+                {
+                    if(cities.children[j].getBounds().contains(missiles[i].x,missiles[i].y))
+                    {
+                        cities.children[j].destroy();
+                    }
+                }
+            }
+        },
+
         checkCollisionGrav: function (circle,missiles,cities) {
 
             for (var i = 0; i < this.rockets.length; i++)
@@ -651,6 +666,11 @@
     let land;
     let cities;
 
+    let city1;
+    let city2;
+    let city3;
+    let city4;
+
     let gravitywell;
     let gravitywell2;
     let rocketSpeed = 2.5;
@@ -689,6 +709,9 @@
         cities.add(new City(game, 400));
         cities.add(new City(game, 650));
 
+        //cities.children[0].destroy();
+
+
         game.physics.startSystem(Phaser.Physics.P2JS);
 
 
@@ -700,6 +723,9 @@
 
 
         missileLauncher = new MissileLauncher(game, missilesBitmap, cities);
+
+        //cities.destroy();
+
         missileLauncher.startWave(1125,12,5);
 
         game.input.onDown.add(launchRocket, this);
@@ -790,6 +816,7 @@
         silo2.update();
         silo3.update();
 
+
         missileLauncher.update();
 
         silo1.checkCollisionGrav(gravitywell, missileLauncher.numAliveMissiles(),cities);
@@ -804,6 +831,18 @@
         silo1.checkCollision(missileLauncher.numAliveMissiles());
         silo2.checkCollision(missileLauncher.numAliveMissiles());
         silo3.checkCollision(missileLauncher.numAliveMissiles());
+
+        silo1.checkcities(missileLauncher.numAliveMissiles(),cities);
+        silo2.checkcities(missileLauncher.numAliveMissiles(),cities);
+        silo3.checkcities(missileLauncher.numAliveMissiles(),cities);
+
+        if(cities.children.length == 0)
+        {
+            game.destroy();
+        }
+
+
+        //silo1.checkCityCollision(missileLauncher.numAliveMissiles())
 
 
     }
