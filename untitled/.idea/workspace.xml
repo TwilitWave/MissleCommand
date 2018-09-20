@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bb80ca79-2ae1-4eee-accd-f5b1dc271d82" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -71,12 +70,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="html" value="7428" />
+          <entry key="html" value="7755" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="HTML" value="7428" />
+          <entry key="HTML" value="7755" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -119,8 +118,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="502">
-              <caret line="835" column="25" selection-start-line="835" selection-start-column="25" selection-end-line="835" selection-end-column="25" />
+            <state relative-caret-position="664">
+              <caret line="730" column="42" selection-start-line="730" selection-start-column="42" selection-end-line="730" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -136,7 +135,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>physics</find>
       <find>title</find>
       <find>speed</find>
       <find>checkCollision</find>
@@ -166,6 +164,7 @@
       <find>tween</find>
       <find>checkcollisiongrav</find>
       <find>updatemytween</find>
+      <find>updatemy</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -185,9 +184,8 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="163" />
-    <option name="y" value="52" />
-    <option name="width" value="1526" />
+    <option name="y" value="23" />
+    <option name="width" value="960" />
     <option name="height" value="1014" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -244,10 +242,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="61846000" />
+    <option name="totallyTimeSpent" value="64206000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="163" y="52" width="1526" height="1014" extended-state="0" />
+    <frame x="0" y="23" width="960" height="1014" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.24945612" />
@@ -314,8 +312,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="502">
-          <caret line="835" column="25" selection-start-line="835" selection-start-column="25" selection-end-line="835" selection-end-column="25" />
+        <state relative-caret-position="664">
+          <caret line="730" column="42" selection-start-line="730" selection-start-column="42" selection-end-line="730" selection-end-column="42" />
         </state>
       </provider>
     </entry>

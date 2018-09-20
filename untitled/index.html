@@ -192,6 +192,7 @@
 
 
 
+
         },
 
         update: function () {
@@ -313,7 +314,7 @@
                 x = game.rnd.integerInRange(newX+ 150, newX + 250);
                 y = game.rnd.integerInRange(newY - 50, newY - 215);
 
-                let destination = { x: newX - 25, y: newY - 25 };
+                let destination = { x: newX, y: newY};
 
                 this.tween = this.game.make.tween(destination).to( { x: x, y: y}, this.speed, Phaser.Easing.Linear.None, true);
                 this.data = this.tween.generateData(60);
@@ -324,7 +325,7 @@
             {
                 x = game.rnd.integerInRange(newX - 150, newX - 250);
                 y = game.rnd.integerInRange(newY - 50, newY - 215);
-                let destination = { x: newX - 25, y: newY - 25 };
+                let destination = { x: newX, y: newY};
 
                 this.tween = this.game.make.tween(destination).to( { x: x, y: y}, this.speed, Phaser.Easing.Linear.None, true);
                 this.data = this.tween.generateData(60);
@@ -450,11 +451,14 @@
             }
 
         },
-        checkCollision: function (missiles) {
+        checkCollision: function (missiles, text) {
             for(var i = 0;i < missiles.length;i++)
             {
                 if(this.circle.contains(missiles[i].x,missiles[i].y)&& missiles[i].alive)
                 {
+                    score = score + 100;
+
+                    //text.setText("Score - ");
                     missiles[i].explode();
 
                 }
@@ -587,7 +591,9 @@
 
         },
 
-        checkCollision: function (missiles) {
+        checkCollision: function (missiles, text) {
+
+
 
             if (missiles.length === 0)
             {
@@ -598,7 +604,9 @@
             {
                 if (this.explosions[i].alive)
                 {
-                    this.explosions[i].checkCollision(missiles);
+
+
+                    this.explosions[i].checkCollision(missiles, text);
                 }
             }
 
@@ -634,7 +642,9 @@
     }
 
     let game = new Phaser.Game(800, 900, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
-
+    game.global = {
+        score : 0,
+    }
     function preload() {
               
         game.load.image('midhive', 'assets/top-01.png');
@@ -666,11 +676,6 @@
     let land;
     let cities;
 
-    let city1;
-    let city2;
-    let city3;
-    let city4;
-
     let gravitywell;
     let gravitywell2;
     let rocketSpeed = 2.5;
@@ -684,6 +689,8 @@
     let flip = 0;
 
     let score = 0;
+
+    let text;
 
     function create() {
 
@@ -721,6 +728,13 @@
         silo3 = new Silo(game, rocketsBitmap, explosionsBitmap, 700);
 
 
+        text = game.add.text(0,0, "Score: 0", {
+            font: "32px Arial",
+            fill: "#ff0044",
+            align: "center"
+        });
+
+
 
         missileLauncher = new MissileLauncher(game, missilesBitmap, cities);
 
@@ -734,8 +748,7 @@
         boomsprite = this.add.sprite(0, 0, 'explosion', 9);
         boomsprite.animations.add('boom', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 10, false);
 
-        //gravitywell = new Phaser.Circle(1000,250,200);
-        //gravitywell2 = new Phaser.Circle(-200,250,200);
+
 
         gravitywell = this.add.sprite(1000, 250, 'wind', 26);
         gravitywell.animations.add('woosh', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
@@ -749,7 +762,6 @@
         if(flip == 0)
         {
             gravitywell.animations.play('woosh');
-            //gravitywell = new Phaser.Circle(1000,250, 128)
             flip = 1;
             var tween = game.add.tween(gravitywell).to( { x: -200, y: 250 }, 6000, Phaser.Easing.Linear.None);
             tween.start();
@@ -758,7 +770,6 @@
         else
         {
             gravitywell2.animations.play('woosh');
-            //gravitywell2 = new Phaser.Circle(-200,250, 128)
             flip = 0;
             var tween = game.add.tween(gravitywell2).to( { x: 1000, y: 250 }, 6000, Phaser.Easing.Linear.None);
             tween.start();
@@ -797,6 +808,7 @@
         timer++;
         spawnTimer++;
 
+        text.setText("Score: " +score);
         if(timer >= 480)
         {
             launchGust();
@@ -828,9 +840,9 @@
         silo3.checkCollisionGrav(gravitywell2, missileLauncher.numAliveMissiles(),cities);
 
 
-        silo1.checkCollision(missileLauncher.numAliveMissiles());
-        silo2.checkCollision(missileLauncher.numAliveMissiles());
-        silo3.checkCollision(missileLauncher.numAliveMissiles());
+        silo1.checkCollision(missileLauncher.numAliveMissiles(), text);
+        silo2.checkCollision(missileLauncher.numAliveMissiles()),text;
+        silo3.checkCollision(missileLauncher.numAliveMissiles(),text);
 
         silo1.checkcities(missileLauncher.numAliveMissiles(),cities);
         silo2.checkcities(missileLauncher.numAliveMissiles(),cities);
