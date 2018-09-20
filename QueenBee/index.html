@@ -41,8 +41,8 @@
 
             this.launch(1, 0);
 
-            this.game.time.events.add(4000, this.launch, this, 1, 0);
-            this.game.time.events.add(4000, this.launch, this, 2, 250);
+            this.game.time.events.add(4000, this.launch, this, 2, 0);
+            this.game.time.events.add(4000, this.launch, this, 3, 250);
 
         },
         launch: function (qty, delay) {
@@ -408,8 +408,8 @@
 
             this.circle = new Phaser.Circle(x, y, 1);
 
-            boomsprite.x = x - 64;
-            boomsprite.y = y - 64;
+            boomsprite.x = x - 56;
+            boomsprite.y = y - 71;
             boomsprite.animations.play('boom');
             explosionsound.play();
 
