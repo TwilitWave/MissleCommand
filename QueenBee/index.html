@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Shittier missile command</title>
+    <title>Queen Bee</title>
     <script src="phaser.min.js"></script>
     <script src="phaser.js"></script>
     <style type="text/css">
@@ -413,6 +413,7 @@
             boomsprite.x = x - 64;
             boomsprite.y = y - 64;
             boomsprite.animations.play('boom');
+            explosionsound.play();
 
             let tween = this.game.make.tween(this.circle).to( { radius: this.maxRadius }, this.speed, Phaser.Easing.Linear.None);
             tween.yoyo(true);
@@ -476,10 +477,10 @@
 
     City = function (game, x) {
 
-        Phaser.Sprite.call(this, game, x, 800, 'comb1', 0);
+        Phaser.Sprite.call(this, game, x, 750, 'comb1', 0);
 
-        this.hitX = this.x + 32;
-        this.hitY = this.y + 30;
+        this.hitX = this.x + 10;
+        this.hitY = this.y + 10;
 
         return this;
 
@@ -620,6 +621,7 @@
                 {
                     if(cities.children[j].getBounds().contains(missiles[i].x,missiles[i].y))
                     {
+                        baselost.play();
                         cities.children[j].destroy();
                         combs.children[j].destroy();
                     }
@@ -656,13 +658,17 @@
         game.load.image('honey', 'assets/TheLarvaShack_.png');
         game.load.image('target', 'assets/target.png');
         game.load.spritesheet('wind', 'assets/wind.png', 200, 128, 27);
-        game.load.spritesheet('queen', 'assets/queen.png', 256, 256, 10);
+        game.load.spritesheet('queen', 'assets/queen.png', 256, 256, 13);
         game.load.image('comb1', 'assets/comb1.png');
         game.load.image('comb2', 'assets/comb2.png');
         game.load.image('comb3', 'assets/comb3.png');
         game.load.image('comb4', 'assets/comb4.png');
         
-
+        game.load.audio('explosionsound', ['assets/explosioncrash.mp3', 'assets/explosioncrash.ogg']);
+        game.load.audio('gameover', ['assets/GameOver.mp3', 'assets/GameOver.ogg']);
+        game.load.audio('baselost', ['assets/losebasegong.mp3', 'assets/losebasegong.ogg']);
+        game.load.audio('title', ['assets/QueenBeeTitleScreen.mp3', 'assets/QueenBeeTitleScreen.ogg']);
+        game.load.audio('windysound', ['assets/wind.mp3', 'assets/wind.ogg']);
 
         game.stage.smoothed = false;
     }
@@ -699,6 +705,12 @@
 
     function create() {
 
+        explosionsound = game.add.audio('explosionsound');
+        gameover = game.add.audio('gameover');
+        baselost = game.add.audio('baselost');
+        title = game.add.audio('title');
+        windysound = game.add.audio('windysound');
+
         game.stage.backgroundColor = '#aed1f5';
         
 
@@ -716,10 +728,10 @@
 
         cities = game.add.group();
 
-        cities.add(new City(game, 150));
-        cities.add(new City(game, 300));
-        cities.add(new City(game, 400));
-        cities.add(new City(game, 650));
+        cities.add(new City(game, 130));
+        cities.add(new City(game, 250));
+        cities.add(new City(game, 525));
+        cities.add(new City(game, 640));
 
         combs = game.add.group();
 
@@ -742,7 +754,7 @@
 
         text = game.add.text(0,0, "Score: 0", {
             font: "32px Arial",
-            fill: "#ff0044",
+            fill: "black",
             align: "center"
         });
 
@@ -760,17 +772,17 @@
         boomsprite = this.add.sprite(0, 0, 'explosion', 9);
         boomsprite.animations.add('boom', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 10, false);
 
-        //queen = this.add.sprite(0, 0, 'queen', 0);
-        //queen.animations.add('diva', [3, 7, 4], 3, true);
-        
+        queen = this.add.sprite(272, 644, 'queen', 0);
+        queen.animations.add('diva', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 10, false);
+        queen.animations.play('diva');
 
         //gravitywell = new Phaser.Circle(1000,250,200);
         //gravitywell2 = new Phaser.Circle(-200,250,200);
 
-        gravitywell = this.add.sprite(1000, 250, 'wind', 26);
+        gravitywell = this.add.sprite(1000, 300, 'wind', 26);
         gravitywell.animations.add('woosh', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
 
-        gravitywell2 = this.add.sprite(-200, 250, 'wind', 26);
+        gravitywell2 = this.add.sprite(-200, 300, 'wind', 26);
         gravitywell2.animations.add('woosh', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
     }
 
@@ -779,21 +791,23 @@
         if(flip == 0)
         {
             gravitywell.x = 1000
-            gravitywell.y = 250
+            gravitywell.y = 300
             gravitywell.animations.play('woosh');
             flip = 1;
-            var tween = game.add.tween(gravitywell).to( { x: -200, y: 250 }, 6000, Phaser.Easing.Linear.None);
+            var tween = game.add.tween(gravitywell).to( { x: -200, y: 300 }, 3000, Phaser.Easing.Linear.None);
             tween.start();
+            windysound.play();
 
         }
         else
         {
             gravitywell2.x = -250
-            gravitywell2.y = 250
+            gravitywell2.y = 300
             gravitywell2.animations.play('woosh');
             flip = 0;
-            var tween = game.add.tween(gravitywell2).to( { x: 1000, y: 250 }, 6000, Phaser.Easing.Linear.None);
+            var tween = game.add.tween(gravitywell2).to( { x: 1000, y: 300 }, 3000, Phaser.Easing.Linear.None);
             tween.start();
+            windysound.play();
         }
 
     }
@@ -826,13 +840,13 @@
 
     function update() {
 
-        //queen.animations.play('diva');
+        
 
         timer++;
         spawnTimer++;
 
         text.setText("Score: " +score);
-        if(timer >= 480)
+        if(timer >= 240)
         {
             launchGust();
             timer = 0;
@@ -873,6 +887,7 @@
 
         if(cities.children.length == 0)
         {
+            gameover.play();
             game.destroy();
         }
 
