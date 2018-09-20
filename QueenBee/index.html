@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -15,9 +15,6 @@
 
 <script type="text/javascript">
 
-
-    //  The in-bound missiles
-
     MissileLauncher = function (game, bmd, cities) {
 
         this.game = game;
@@ -33,12 +30,11 @@
 
     }
 
+
     MissileLauncher.prototype = {
 
 
         startWave: function (total, speed, starting) {
-
-            
 
             this.total = total;
             this.speed = speed;
@@ -651,6 +647,7 @@
         score : 0,
     }
     function preload() {
+        
         game.load.image('city', 'assets/foreground.png');
         game.load.image('midhive', 'assets/top-01.png');  
         game.load.image('missile', 'assets/shelbee.png');
@@ -665,6 +662,7 @@
         game.load.image('comb2', 'assets/comb2.png');
         game.load.image('comb3', 'assets/comb3.png');
         game.load.image('comb4', 'assets/comb4.png');
+        game.load.image('GameStart', 'assets/GameStart.png');
         
         game.load.audio('explosionsound', ['assets/explosioncrash.mp3', 'assets/explosioncrash.ogg']);
         game.load.audio('gameover', ['assets/GameOver.mp3', 'assets/GameOver.ogg']);
@@ -697,6 +695,8 @@
     let silo2;
     let silo3;
 
+    let isGameStarted = false; 
+
     let timer = 400;
     let spawnTimer = 0;
     let flip = 0;
@@ -705,9 +705,20 @@
 
     let text;
 
-    function create() {
-        
+    function onSpaceDown()
+    {
+        console.log("pressed space");
+        if(!this.isGameStarted){
+          this.isGameStarted = true;
+          GameStart.destroy();          
+        }
+    }
 
+    function create() {
+        this.isGameStarted = false;
+
+        this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
 
         explosionsound = game.add.audio('explosionsound');
         gameover = game.add.audio('gameover');
@@ -772,7 +783,11 @@
 
         missileLauncher.startWave(1125,12,5);
 
+        
+        
+
         game.input.onDown.add(launchRocket, this);
+
 
 
         boomsprite = this.add.sprite(0, 0, 'explosion', 9);
@@ -790,6 +805,8 @@
 
         gravitywell2 = this.add.sprite(-200, 300, 'wind', 26);
         gravitywell2.animations.add('woosh', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
+
+        GameStart = this.add.image(0,0,'GameStart');
     }
 
     function launchGust()
@@ -803,6 +820,7 @@
             var tween = game.add.tween(gravitywell).to( { x: -200, y: 300 }, 3000, Phaser.Easing.Linear.None);
             tween.start();
             windysound.play();
+
                 
         }
         else
@@ -845,61 +863,75 @@
     }
 
     function update() {
+        //console.log(this.spaceKey);
+        
+        if (this.spaceKey.isDown)
+            {                
+                onSpaceDown();
+                this.isGameStarted = true;
+            }
 
-
-
-        timer++;
-        spawnTimer++;
-
-        text.setText("Score: " +score);
-        if(timer >= 240)
+        if(this.isGameStarted)
         {
-            launchGust();
-            timer = 0;
-        }
+        
 
-        if(spawnTimer >= 320)
-        {
-            missileLauncher.startWave(1125,12,5);
-            spawnTimer = 0;
-        }
-        rocketsBitmap.clear();
-        explosionsBitmap.clear();
-        missilesBitmap.clear();
+            timer++;
+            spawnTimer++;
 
-        silo1.update();
-        silo2.update();
-        silo3.update();
+            text.setText("Score: " +score);
+            if(timer >= 240)
+            {
+                launchGust();
+                timer = 0;
+            }
 
+            if(spawnTimer >= 320)
+            {
+                missileLauncher.startWave(1125,12,5);
+                spawnTimer = 0;
+            }
+            rocketsBitmap.clear();
+            explosionsBitmap.clear();
+            missilesBitmap.clear();
 
-        missileLauncher.update();
-
-        silo1.checkCollisionGrav(gravitywell, missileLauncher.numAliveMissiles(),cities);
-        silo2.checkCollisionGrav(gravitywell, missileLauncher.numAliveMissiles(),cities);
-        silo3.checkCollisionGrav(gravitywell, missileLauncher.numAliveMissiles(),cities);
-
-        silo1.checkCollisionGrav(gravitywell2, missileLauncher.numAliveMissiles(),cities);
-        silo2.checkCollisionGrav(gravitywell2, missileLauncher.numAliveMissiles(),cities);
-        silo3.checkCollisionGrav(gravitywell2, missileLauncher.numAliveMissiles(),cities);
+            silo1.update();
+            silo2.update();
+            silo3.update();
 
 
-        silo1.checkCollision(missileLauncher.numAliveMissiles(), text);
-        silo2.checkCollision(missileLauncher.numAliveMissiles()),text;
-        silo3.checkCollision(missileLauncher.numAliveMissiles(),text);
+            missileLauncher.update();
 
-        silo1.checkcities(missileLauncher.numAliveMissiles(),cities);
-        silo2.checkcities(missileLauncher.numAliveMissiles(),cities);
-        silo3.checkcities(missileLauncher.numAliveMissiles(),cities);
+            silo1.checkCollisionGrav(gravitywell, missileLauncher.numAliveMissiles(),cities);
+            silo2.checkCollisionGrav(gravitywell, missileLauncher.numAliveMissiles(),cities);
+            silo3.checkCollisionGrav(gravitywell, missileLauncher.numAliveMissiles(),cities);
 
+            silo1.checkCollisionGrav(gravitywell2, missileLauncher.numAliveMissiles(),cities);
+            silo2.checkCollisionGrav(gravitywell2, missileLauncher.numAliveMissiles(),cities);
+            silo3.checkCollisionGrav(gravitywell2, missileLauncher.numAliveMissiles(),cities);
+
+
+            silo1.checkCollision(missileLauncher.numAliveMissiles(), text);
+            silo2.checkCollision(missileLauncher.numAliveMissiles()),text;
+            silo3.checkCollision(missileLauncher.numAliveMissiles(),text);
+
+            silo1.checkcities(missileLauncher.numAliveMissiles(),cities);
+            silo2.checkcities(missileLauncher.numAliveMissiles(),cities);
+            silo3.checkcities(missileLauncher.numAliveMissiles(),cities);
         if(cities.children.length == 1)
         {
             gameover.play();
             //game.destroy();
         }
 
+            if(cities.children.length == 0)
+            {
+                gameover.play();
+                game.destroy();
+            }
 
-        //silo1.checkCityCollision(missileLauncher.numAliveMissiles())
 
+            //silo1.checkCityCollision(missileLauncher.numAliveMissiles())
+        }
 
     }
 
