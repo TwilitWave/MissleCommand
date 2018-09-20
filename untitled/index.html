@@ -665,7 +665,6 @@
 
     function create() {
 
-
         game.stage.backgroundColor = '#aed1f5';
         
 
@@ -690,8 +689,7 @@
 
         game.physics.startSystem(Phaser.Physics.P2JS);
 
-        //gravitywell = new Phaser.Circle(1000,250,128);
-        //gravitywell2 = new Phaser.Circle(-200,250,128);
+
 
         silo1 = new Silo(game, rocketsBitmap, explosionsBitmap, 100);
         silo2 = new Silo(game, rocketsBitmap, explosionsBitmap, 400);
@@ -708,6 +706,9 @@
         boomsprite = this.add.sprite(0, 0, 'explosion', 9);
         boomsprite.animations.add('boom', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 10, false);
 
+        //gravitywell = new Phaser.Circle(1000,250,200);
+        //gravitywell2 = new Phaser.Circle(-200,250,200);
+
         gravitywell = this.add.sprite(1000, 250, 'wind', 26);
         gravitywell.animations.add('woosh', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26], 10, true);
 
@@ -720,7 +721,7 @@
         if(flip == 0)
         {
             gravitywell.animations.play('woosh');
-            // gravitywell = new Phaser.Circle(1000,250, 128)
+            //gravitywell = new Phaser.Circle(1000,250, 128)
             flip = 1;
             var tween = game.add.tween(gravitywell).to( { x: -200, y: 250 }, 6000, Phaser.Easing.Linear.None);
             tween.start();
@@ -729,7 +730,7 @@
         else
         {
             gravitywell2.animations.play('woosh');
-            // gravitywell2 = new Phaser.Circle(-200,250, 128)
+            //gravitywell2 = new Phaser.Circle(-200,250, 128)
             flip = 0;
             var tween = game.add.tween(gravitywell2).to( { x: 1000, y: 250 }, 6000, Phaser.Easing.Linear.None);
             tween.start();
