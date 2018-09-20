@@ -868,7 +868,7 @@
     function update() {
         //console.log(this.spaceKey);
         
-        if (this.spaceKey.isDown)
+        if (this.spaceKey.isDown || this.game.input.activePointer.leftButton.isDown)
             {                
                 onSpaceDown();
                 this.isGameStarted = true;
