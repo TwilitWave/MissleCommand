@@ -304,9 +304,30 @@
         },
 
         updateMyTween: function(circle, newX, newY){
-            this.tween = this.game.make.tween(this.line).to( { x: (this.destX + 400) * Math.sin( Math.PI/4), y: (this.destY + 400) * Math.cos(Math.PI/4) }, 2000, Phaser.Easing.Linear.None, true);
-            this.data = this.tween.generateData(60);
-            this.tween.start();
+
+            var x = 0;
+            var y = 0;
+
+            if(newX >= 0 && newX <= 640)
+            {
+                x = game.rnd.integerInRange(newX+ 150, newX + 400);
+                y = game.rnd.integerInRange(newY - 50, newY - 215);
+
+                this.tween = this.game.make.tween(this.line).to( { x: x, y: y}, 2500, Phaser.Easing.Linear.None, true);
+                this.data = this.tween.generateData(60);
+                this.tween.start();
+            }
+
+            else if(newY >= 650 && newY <= 1260)
+            {
+                x = game.rnd.integerInRange(newX, newX - 150);
+                y = game.rnd.integerInRange(newY, newY - 150);
+
+                this.tween = this.game.make.tween(this.line).to( { x: x, y: y}, 1000, Phaser.Easing.Linear.None, true);
+                this.data = this.tween.generateData(60);
+                this.tween.start();
+            }
+
 
         },
 
@@ -570,8 +591,7 @@
 
             for (var i = 0; i < this.rockets.length; i++)
             {
-                //this.rockets[i].updateMyTween();
-                    if(circle.contains(this.rockets[i].x,this.rockets[i].y))
+                if(circle.contains(this.rockets[i].x,this.rockets[i].y))
                     {
                         this.rockets[i].updateMyTween(circle,this.rockets[i].x,this.rockets[i].y);
 
@@ -613,7 +633,6 @@
 
     let land;
     let cities;
-    let gravityWells;
 
     let gravitywell;
     let gravitywell2;
