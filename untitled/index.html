@@ -621,9 +621,8 @@
     let game = new Phaser.Game(800, 900, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
     function preload() {
-              
-        game.load.image('midhive', 'assets/top-01.png');
         game.load.image('city', 'assets/foreground.png');
+        game.load.image('midhive', 'assets/top-01.png');  
         game.load.image('missile', 'assets/shelbee.png');
         game.load.image('enemymissile', 'assets/wasp01.png');
         game.load.spritesheet('explosion', 'assets/explosion.png', 128, 128, 10);
@@ -631,7 +630,11 @@
         game.load.image('honey', 'assets/TheLarvaShack_.png');
         game.load.image('target', 'assets/target.png');
         game.load.spritesheet('wind', 'assets/wind.png', 200, 128, 27);
-
+        game.load.image('comb1', 'assets/comb1.png');
+        game.load.image('comb2', 'assets/comb2.png');
+        game.load.image('comb3', 'assets/comb3.png');
+        game.load.image('comb4', 'assets/comb4.png');
+        
 
 
         game.stage.smoothed = false;
@@ -681,6 +684,10 @@
         land = game.add.image(0, 0, 'city');
         hives = game.add.image(0, -80, 'hives');
         midhive = game.add.image(0, 0, 'midhive');
+        // comb1 = game.add.image(0, 0, 'comb1');
+        // comb2 = game.add.image(0, 0, 'comb2');
+        // comb3 = game.add.image(0, 0, 'comb3');
+        // comb4 = game.add.image(0, 0, 'comb4');
 
         cities = game.add.group();
 
@@ -722,6 +729,8 @@
     {
         if(flip == 0)
         {
+            gravitywell.x = 1000
+            gravitywell.y = 250
             gravitywell.animations.play('woosh');
             //gravitywell = new Phaser.Circle(1000,250, 128)
             flip = 1;
@@ -731,6 +740,8 @@
         }
         else
         {
+            gravitywell2.x = -250
+            gravitywell2.y = 250
             gravitywell2.animations.play('woosh');
             //gravitywell2 = new Phaser.Circle(-200,250, 128)
             flip = 0;
