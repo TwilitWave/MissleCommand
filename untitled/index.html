@@ -310,20 +310,20 @@
 
             if(newX >= 0 && newX <= 640)
             {
-                x = game.rnd.integerInRange(newX+ 150, newX + 400);
+                x = game.rnd.integerInRange(newX+ 150, newX + 300);
                 y = game.rnd.integerInRange(newY - 50, newY - 215);
 
-                this.tween = this.game.make.tween(this.line).to( { x: x, y: y}, 2500, Phaser.Easing.Linear.None, true);
+                this.tween = this.game.make.tween(this.line).to( { x: x, y: y}, 2000, Phaser.Easing.Linear.None, true);
                 this.data = this.tween.generateData(60);
                 this.tween.start();
             }
 
-            else if(newY >= 650 && newY <= 1260)
+            else if(newX > 640 && newX <= 1260)
             {
-                x = game.rnd.integerInRange(newX, newX - 150);
-                y = game.rnd.integerInRange(newY, newY - 150);
+                x = game.rnd.integerInRange(newX - 150, newX - 300);
+                y = game.rnd.integerInRange(newY - 50, newY - 215);
 
-                this.tween = this.game.make.tween(this.line).to( { x: x, y: y}, 1000, Phaser.Easing.Linear.None, true);
+                this.tween = this.game.make.tween(this.line).to( { x: x, y: y}, 2000, Phaser.Easing.Linear.None, true);
                 this.data = this.tween.generateData(60);
                 this.tween.start();
             }
