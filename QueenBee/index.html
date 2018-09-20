@@ -38,6 +38,8 @@
 
         startWave: function (total, speed, starting) {
 
+            
+
             this.total = total;
             this.speed = speed;
 
@@ -704,12 +706,16 @@
     let text;
 
     function create() {
+        
+
 
         explosionsound = game.add.audio('explosionsound');
         gameover = game.add.audio('gameover');
         baselost = game.add.audio('baselost');
         title = game.add.audio('title');
         windysound = game.add.audio('windysound');
+
+        title.play();
 
         game.stage.backgroundColor = '#aed1f5';
         
@@ -797,7 +803,7 @@
             var tween = game.add.tween(gravitywell).to( { x: -200, y: 300 }, 3000, Phaser.Easing.Linear.None);
             tween.start();
             windysound.play();
-
+                
         }
         else
         {
@@ -840,7 +846,7 @@
 
     function update() {
 
-        
+
 
         timer++;
         spawnTimer++;
